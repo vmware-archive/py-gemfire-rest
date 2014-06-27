@@ -1,13 +1,9 @@
 import requests
 import json
-#from main import *
+
 
 class GemfireClient:
-    url=""
-    hostname=""
-    base_url=""
-    port=0
-
+    
     def createURL(self, param):
         self.url = self.base_url + param
 
