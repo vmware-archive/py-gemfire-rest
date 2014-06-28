@@ -1,13 +1,13 @@
-
-m GemfireClient import *
+from GemfireClient import *
 
 hostname = "mclaren.gemstone.com"
 port = 8080
 client = GemfireClient(hostname, port)
 data = requests.get(client.base_url).json()
+#print data
 
 
-
-c = GemfireClient(hostname, port)
 client.getAllRegionNames()
-customerRegion = client.getRegion("orders")
+orderRegion = client.getRegion("orders")
+value = {"change":"change"}
+orderRegion.put(9,value)
