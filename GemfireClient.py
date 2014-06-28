@@ -3,14 +3,14 @@ import json
 
 
 class GemfireClient:
-    
+
     def createURL(self, param):
         self.url = self.base_url + param
 
     def __init__(self, hostname, port):
         self.hostname = hostname
         self.port = port
-        self.base_url = "http://" + hostname + ":" + str(port) + "/gemfire-api/v1/"
+        self.base_url= "http://" + hostname + ":" + str(port) + "/gemfire-api/v1/"
 
     def getAllRegionNames(self):
         data = requests.get(self.base_url).json()
@@ -24,15 +24,42 @@ class GemfireClient:
         names = [region['name'] for region in rnames]
         for n in names:
             if n==name:
-                return Region(name)
+                return Region(name,self.base_url)
         else:
-            print "HTTP Error 500: Region Not Found"
+            print False
 
 class Region:
 
-    name = ''
-    def __init__(self, name):
+    def __init__(self, name, base_url):
         self.name = name
+        self.base_url = base_url + name
+
+    def getAll(self):
+        data = requests.get(self.base_url)
+        print data.text
+
+    def create(self, key, value):
+        url = self.base_url + "?key=" + str(key)
+        headers = {'content-type': 'application/json'}
+        r = requests.post(url, data=json.dumps(value), headers=headers)
+        if r.status_code == 201 or r.status_code == 202:
+            print True
+        else:
+            print False
+
+    def put(self,key,value):
+        url = self.base_url + "/" + str(key)
+        headers = {'content-type': 'application/json'}
+        r = requests.put(url, data=json.dumps(value), headers=headers)
+        if r.status_code == 200:
+            print True
+        else:
+            print False
+
+
+
+
+
 
 
     
