@@ -17,7 +17,7 @@ class GemfireClient:
         data = requests.get(self.base_url).json()
         rnames = data['regions']
         names = [region['name'] for region in rnames]
-        pprint(names)
+        print names
 
     def getRegion(self,name):
         data = requests.get(self.base_url).json()
@@ -43,10 +43,18 @@ class GemfireClient:
             print False
             
     def run(self,Query_id, Query_args):
-        url = self.base_url + "/queries/" + str(Query_id)
+        url = self.base_url + "queries/" + str(Query_id)
         headers = {'content-type': 'application/json'}
         r = requests.post(url, data=json.dumps(Query_args), headers=headers)
         print r.status_code 
+        if r.status_code == 201 or r.status_code == 202:
+            print True
+        else:
+            print False
+            
+    def runQuery(self,Query_string):
+        url = self.base_url + "queries/adhoc?q=" + str(Query_string)
+        r = requests.get(url) 
         if r.status_code == 201 or r.status_code == 202:
             print True
         else:
