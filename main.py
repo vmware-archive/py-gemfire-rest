@@ -1,40 +1,52 @@
 from GemfireClient import *
+from pprint import pprint
 
 hostname = "mclaren.gemstone.com"
 port = 8080
+
+
 client = GemfireClient(hostname, port)
 
 
-client.listAllQueries()
-client.runQuery("SELECT * FROM /customer c WHERE c.customerId = 1012")
+regions = client.getAllRegionNames()
+print regions[0]
+print regions[1]
+print regions[2]
+query = client.listAllQueries()
+print query[0]
+print query[1]
+print query[2]
 
-client.getAllRegionNames()
-client.newQuery("orderselect", "SELECT * FROM /orders")
-
-
-myRegion = client.getRegion("customer")
-myquery =  client.AllQueries("selectOrders")
-value = {"@old":{"change":"change124"}, "@new":{"change":"change"}}
-items = {12:{"change":"value"},13:{"change":"delete"}}
-myRegion.put(10,value)
-myRegion.getAll()
-client.runQuery("SELECT * FROM /customer")
-myRegion.keys()
-myRegion.get("9")
-myRegion.get("2,3,4,5")
-myRegion.putAll(items)
-myRegion.put(14, value)
-myRegion.update(14, value)
-myRegion.delete("13,14")
-myRegion.compareAndSet(9,value)
+print query[1][0]
 
 
+myRegion = client.getRegion("orders")
 
 
-
-
-
-
+ordersdata = myRegion.getAll()
+print ordersdata
+value = {"change":"change124"}
+neworder = myRegion.create(12, value)
+print neworder
+putvalue = {"change":"random"}
+putdata = myRegion.put(12, putvalue)
+print putdata
+allkeys = myRegion.keys()
+print allkeys
+print allkeys[1]
+alldata = myRegion.get(17)
+print alldata
+items = {'15':{"change":"value_putall"},'17':{"change":"delete_putall"}}
+putdata = myRegion.putAll(items)
+print putdata
+value_update = {"change":"change124"}
+update = myRegion.update(17, value_update)
+print update
+comp_value = {"@old":{"change":"change124"}, "@new":{"change":"change"}}
+compare = myRegion.compareAndSet(17, comp_value)
+print compare
+delet = myRegion.delete("17,18,19")
+print delet
 
 
 
