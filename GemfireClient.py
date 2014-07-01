@@ -1,7 +1,6 @@
-        
 import requests
 import json
-from pprint import pprint
+import jsonpickle
 
 class GemfireClient:
 
@@ -26,7 +25,6 @@ class GemfireClient:
         for n in names:
             if n==name:
                 return Region(name,self.base_url)
-                
         else:
             return False
 
@@ -88,7 +86,8 @@ class Region:
     def create(self, key, value):
         url = self.base_url + "?key=" + str(key)
         headers = {'content-type': 'application/json'}
-        data = requests.post(url, data=json.dumps(value), headers=headers)
+        jsonvalue = jsonpickle.encode(value)
+        data = requests.post(url, data=jsonvalue, headers=headers)
         if data.status_code == 201:
             return True
         else:
@@ -98,7 +97,8 @@ class Region:
     def put(self,key,value):
         url = self.base_url + "/" + str(key)
         headers = {'content-type': 'application/json'}
-        data = requests.put(url, data=json.dumps(value), headers=headers)
+        jsonvalue = jsonpickle.encode(value)
+        data = requests.put(url, data=jsonvalue, headers=headers)
         if data.status_code == 200:
             return True
         else:
@@ -109,7 +109,6 @@ class Region:
         url = self.base_url + "/keys"
         data = requests.get(url).json()
         names = data['keys']
-        #names = [region['name'] for region in rnames]
         return names
         
 
@@ -129,7 +128,8 @@ class Region:
     def update(self,key,value):
         url = self.base_url + "/" + str(key) +"?op=REPLACE"
         headers = {'content-type': 'application/json'}
-        data = requests.put(url, data=json.dumps(value), headers=headers)
+        jsonvalue = jsonpickle.encode(value)
+        data = requests.put(url, data=jsonvalue, headers=headers)
         if data.status_code == 200:
             return True
         else:
@@ -139,7 +139,8 @@ class Region:
     def compareAndSet(self,key,value):
         url = self.base_url + "/" + str(key) +"?op=CAS"
         headers = {'content-type': 'application/json'}
-        data = requests.put(url, data=json.dumps(value), headers=headers)
+        jsonvalue = jsonpickle.encode(value)
+        data = requests.put(url, data=jsonvalue, headers=headers)
         if data.status_code == 200:
             return True
         else:
