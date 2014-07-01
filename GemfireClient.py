@@ -1,3 +1,4 @@
+        
 import requests
 import json
 from pprint import pprint
@@ -15,7 +16,7 @@ class GemfireClient:
         data = requests.get(self.base_url).json()
         rnames = data['regions']
         names = [region['name'] for region in rnames]
-        print names
+        return names
 
     #Initializes and returns a Region Object
     def getRegion(self,name):
@@ -25,14 +26,20 @@ class GemfireClient:
         for n in names:
             if n==name:
                 return Region(name,self.base_url)
+                
         else:
-            print False
+            return False
 
     #Lists all stored Queries in the server
     def listAllQueries(self):
         allqueries = requests.get(self.base_url+"/queries").json()
-        pprint(allqueries)
-
+        #return allqueries
+        qid = allqueries['queries']
+        querystring = [query['oql']for query in qid]
+        queryid = [query['id']for query in qid]
+        return querystring
+    
+    
     #Instantiates and returns a Query Object
     def getQuery(self,queryID):
         allqueries = requests.get(self.base_url+"/queries").json()
@@ -41,8 +48,8 @@ class GemfireClient:
         for n in names:
             if n==queryID:
                 return Query(queryID,self.base_url)
-        else:
-            print False
+            else:
+                return False
 
     #Creates a new Query and adds it to the server
     def newQuery(self, Query_id, Query_string):
@@ -50,9 +57,9 @@ class GemfireClient:
         headers = {'content-type': 'application/json'}
         data = requests.post(url, data=json.dumps(Query_string), headers=headers)
         if data.status_code == 201:
-            print True
+            return True
         else:
-            print False
+            return False
 
     #Runs an adhoc Query
     def runQuery(self,Query_string):
@@ -60,9 +67,9 @@ class GemfireClient:
         data = requests.get(url)
         print data.text
         if data.status_code == 200:
-            print True
+            return True
         else:
-            print False
+            return False
 
 
 class Region:
@@ -75,7 +82,7 @@ class Region:
     #Returns all the data in a Region
     def getAll(self):
         data = requests.get(self.base_url)
-        print data.text
+        return data.text
 
     #Creates a new data value in the Region if the key is absent
     def create(self, key, value):
@@ -83,9 +90,9 @@ class Region:
         headers = {'content-type': 'application/json'}
         data = requests.post(url, data=json.dumps(value), headers=headers)
         if data.status_code == 201:
-            print True
+            return True
         else:
-            print False
+            return False
 
     #Updates or inserts data for a specified key
     def put(self,key,value):
@@ -93,36 +100,40 @@ class Region:
         headers = {'content-type': 'application/json'}
         data = requests.put(url, data=json.dumps(value), headers=headers)
         if data.status_code == 200:
-            print True
+            return True
         else:
-            print False
+            return False
 
     #Returns all keys in the Region
     def keys(self):
         url = self.base_url + "/keys"
-        data = requests.get(url)
-        print data.text
+        data = requests.get(url).json()
+        names = data['keys']
+        #names = [region['name'] for region in rnames]
+        return names
+        
 
     #Returns the data value for a specified key
     def get(self, key):
         url = self.base_url + "/" + str(key) +"?ignoreMissingKey=true"
         data = requests.get(url)
-        print data.text
+        return data.text
 
     #Insert or updates data for a multiple keys specified by a hashtable
     def putAll(self,items):
         for key in items:
             self.put(key,items[key])
-
+            return True
+        
     #Updates the data in a region only if the specified key is present
     def update(self,key,value):
         url = self.base_url + "/" + str(key) +"?op=REPLACE"
         headers = {'content-type': 'application/json'}
         data = requests.put(url, data=json.dumps(value), headers=headers)
         if data.status_code == 200:
-            print True
+            return True
         else:
-            print False
+            return False
             
     #Compares old values and if identical replaces with a new value
     def compareAndSet(self,key,value):
@@ -130,26 +141,26 @@ class Region:
         headers = {'content-type': 'application/json'}
         data = requests.put(url, data=json.dumps(value), headers=headers)
         if data.status_code == 200:
-            print True
+            return True
         else:
-            print False
+            return False
 
     #Deletes the corresponding data value for the specified key
     def delete(self,key):
         url = self.base_url + "/" + str(key)
         data = requests.delete(url)
         if data.status_code == 200:
-            print True
+            return True
         else:
-            print False
+            return False
 
     #Deletes all data in the Region
     def clear(self):
         data = requests.delete(self.base_url)
         if data.status_code == 200:
-            print True
+            return True
         else:
-            print False
+            return False
 
 
 class Query:
@@ -165,6 +176,6 @@ class Query:
         data = requests.post(self.base_url, data=json.dumps(Query_args), headers=headers)
         print data.text
         if data.status_code == 200:
-            print True
+            return True
         else:
-            print False
+            return False
