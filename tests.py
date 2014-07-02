@@ -9,15 +9,39 @@ class SimpleTestCase(unittest.TestCase):
         self.client = GemfireClient(hostname, port)
         self.myRegion = self.client.getRegion("orders")
         
-     
+    def testgetAllRegionNames(self):
+        allregions = self.client.getAllRegionNames()
+        self.assertEqual(allregions[0], 'customer')
+        self.assertEqual(allregions[1], 'products')
+        self.assertEqual(allregions[2], 'orders')
+        
     def testgetRegion(self):
         region = self.client.getRegion("orders")
         self.assertNotEqual(False, region)
+        
+    def testlistAllQueries(self):
+        allqueries = self.client.listAllQueries()
+        self.assertEqual(allqueries[0], 'SELECT o FROM /orders o WHERE o.quantity > $1 AND o.totalprice > $2')
+        
+    def testnewquery(self):
+        newquery = self.client.newQuery('custproducts','SELECT * FROM /products')
+        self.assertEqual(newquery, True) 
+        
+    def testrunquery(self):
+        runquery = self.client.runQuery('SELECT * FROM /orders')
+        self.assertEqual(runquery, True) 
          
     
     def testgetQuery(self):
         query = self.client.getQuery("selectOrders")
         self.assertNotEqual(False, query)
+        
+    def testkeys(self):
+        keys = self.myRegion.keys()
+        self.assertEqual(keys[0], '1000') 
+        self.assertEqual(keys[1], '1001') 
+        
+    
               
     def testcreate(self):
         value = {"change":"chan"}
@@ -44,7 +68,18 @@ class SimpleTestCase(unittest.TestCase):
         self.assertEqual(self.myRegion.compareAndSet(17, comp_value), True)
         
     def testdelete(self):
-        self.assertEqual(self.myRegion.delete("20"), True)
+        self.assertEqual(self.myRegion.delete("20"), True)   
+        
+   
+        
+    
+        
+   
+        
+    
+        
+        
+
         
 
             
