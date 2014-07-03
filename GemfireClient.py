@@ -31,13 +31,8 @@ class GemfireClient:
     #Lists all stored Queries in the server
     def listAllQueries(self):
         allqueries = requests.get(self.base_url+"/queries").json()
-        #return allqueries
-        qid = allqueries['queries']
-        querystring = [query['oql']for query in qid]
-        queryid = [query['id']for query in qid]
-        return querystring
-    
-    
+        return allqueries["queries"]
+
     #Instantiates and returns a Query Object
     def getQuery(self,queryID):
         allqueries = requests.get(self.base_url+"/queries").json()
@@ -46,14 +41,15 @@ class GemfireClient:
         for n in names:
             if n==queryID:
                 return Query(queryID,self.base_url)
-            else:
-                return False
+        else:
+            return False
 
     #Creates a new Query and adds it to the server
     def newQuery(self, Query_id, Query_string):
         url = self.base_url + "/queries?id=" + str(Query_id) + "&q=" + str(Query_string)
         headers = {'content-type': 'application/json'}
-        data = requests.post(url, data=json.dumps(Query_string), headers=headers)
+        jvalue = jsonpickle.encode(Query_string)
+        data = requests.post(url, data=jvalue, headers=headers)
         if data.status_code == 201:
             return True
         else:
@@ -63,11 +59,7 @@ class GemfireClient:
     def runQuery(self,Query_string):
         url = self.base_url + "queries/adhoc?q=" + str(Query_string)
         data = requests.get(url)
-        print data.text
-        if data.status_code == 200:
-            return True
-        else:
-            return False
+        return jsonpickle.decode(data.text)
 
 
 class Region:
@@ -80,14 +72,15 @@ class Region:
     #Returns all the data in a Region
     def getAll(self):
         data = requests.get(self.base_url)
-        return data.text
+        fdata = jsonpickle.decode(data.text)
+        return fdata[self.name]
 
     #Creates a new data value in the Region if the key is absent
     def create(self, key, value):
         url = self.base_url + "?key=" + str(key)
         headers = {'content-type': 'application/json'}
-        jsonvalue = jsonpickle.encode(value)
-        data = requests.post(url, data=jsonvalue, headers=headers)
+        jvalue = jsonpickle.encode(value)
+        data = requests.post(url, data=jvalue, headers=headers)
         if data.status_code == 201:
             return True
         else:
@@ -97,8 +90,8 @@ class Region:
     def put(self,key,value):
         url = self.base_url + "/" + str(key)
         headers = {'content-type': 'application/json'}
-        jsonvalue = jsonpickle.encode(value)
-        data = requests.put(url, data=jsonvalue, headers=headers)
+        jvalue = jsonpickle.encode(value)
+        data = requests.put(url, data=jvalue, headers=headers)
         if data.status_code == 200:
             return True
         else:
@@ -107,29 +100,27 @@ class Region:
     #Returns all keys in the Region
     def keys(self):
         url = self.base_url + "/keys"
-        data = requests.get(url).json()
-        names = data['keys']
-        return names
-        
+        data = requests.get(url)
+        fdata = jsonpickle.decode(data.text)
+        return fdata["keys"]
 
     #Returns the data value for a specified key
     def get(self, key):
         url = self.base_url + "/" + str(key) +"?ignoreMissingKey=true"
         data = requests.get(url)
-        return data.text
+        return jsonpickle.decode(data.text)
 
     #Insert or updates data for a multiple keys specified by a hashtable
     def putAll(self,items):
         for key in items:
             self.put(key,items[key])
-            return True
-        
+
     #Updates the data in a region only if the specified key is present
     def update(self,key,value):
         url = self.base_url + "/" + str(key) +"?op=REPLACE"
         headers = {'content-type': 'application/json'}
-        jsonvalue = jsonpickle.encode(value)
-        data = requests.put(url, data=jsonvalue, headers=headers)
+        jvalue = jsonpickle.encode(value)
+        data = requests.put(url, data=jvalue, headers=headers)
         if data.status_code == 200:
             return True
         else:
@@ -139,8 +130,8 @@ class Region:
     def compareAndSet(self,key,value):
         url = self.base_url + "/" + str(key) +"?op=CAS"
         headers = {'content-type': 'application/json'}
-        jsonvalue = jsonpickle.encode(value)
-        data = requests.put(url, data=jsonvalue, headers=headers)
+        jvalue = jsonpickle.encode(value)
+        data = requests.put(url, data=jvalue, headers=headers)
         if data.status_code == 200:
             return True
         else:
@@ -174,9 +165,6 @@ class Query:
     #Runs the Query with specified parameters
     def run(self,Query_args):
         headers = {'content-type': 'application/json'}
-        data = requests.post(self.base_url, data=json.dumps(Query_args), headers=headers)
-        print data.text
-        if data.status_code == 200:
-            return True
-        else:
-            return False
+        jvalue = jsonpickle.encode(Query_args)
+        data = requests.post(self.base_url, data=jvalue, headers=headers)
+        return jsonpickle.decode(data.text)
