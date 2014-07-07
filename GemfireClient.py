@@ -105,8 +105,9 @@ class Region:
         return fdata["keys"]
 
     #Returns the data value for a specified key
-    def get(self, key):
-        url = self.base_url + "/" + str(key) +"?ignoreMissingKey=true"
+    def get(self, *arg):
+        sub_url = ','.join(str(key) for key in arg)
+        url = self.base_url + "/" + sub_url +"?ignoreMissingKey=true"
         data = requests.get(url)
         return jsonpickle.decode(data.text)
 
@@ -138,8 +139,9 @@ class Region:
             return False
 
     #Deletes the corresponding data value for the specified key
-    def delete(self,key):
-        url = self.base_url + "/" + str(key)
+    def delete(self,*arg):
+        sub_url = ','.join(str(key) for key in arg)
+        url = self.base_url + "/" + sub_url
         data = requests.delete(url)
         if data.status_code == 200:
             return True
