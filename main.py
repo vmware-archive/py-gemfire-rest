@@ -1,4 +1,3 @@
-from GemfireClient import *
 from tests import *
 
 
