@@ -2,7 +2,6 @@ import unittest
 from GemfireClient import *
 
 
-
 class SimpleTestCase(unittest.TestCase):
     def setUp(self):
         hostname = "mclaren.gemstone.com"
