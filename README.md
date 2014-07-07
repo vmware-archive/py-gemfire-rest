@@ -1,5 +1,5 @@
 py-gemfire
 ==========
-Python client for gemfire which exerises gemfire-REST-API
+Python client for Gemfire which exercises the Gemfire-REST-API
 
-Currently under development
+Currently under development. Client documentation still in progress. 
