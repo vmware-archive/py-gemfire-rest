@@ -110,6 +110,12 @@ class Region:
         url = self.base_url + "/" + sub_url +"?ignoreMissingKey=true"
         data = requests.get(url)
         return jsonpickle.decode(data.text)
+        
+    #Method to support region[key] notion
+    def __getitem__(self,key):
+        url = self.base_url + "/" + str(key) +"?ignoreMissingKey=true"
+        data = requests.get(url)
+        return jsonpickle.decode(data.text)
 
     #Insert or updates data for a multiple keys specified by a hashtable
     def putAll(self,items):
