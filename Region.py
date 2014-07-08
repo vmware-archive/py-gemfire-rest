@@ -11,7 +11,8 @@ class Region:
 
     # Returns all the data in a Region
     def get_all(self):
-        data = requests.get(self.base_url)
+        url = self.base_url + "?ALL"
+        data = requests.get(url) 
         fdata = jsonpickle.decode(data.text)
         return fdata[self.name]
 
