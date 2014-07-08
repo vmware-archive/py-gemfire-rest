@@ -84,10 +84,12 @@ class SimpleTestCase(unittest.TestCase):
         
         
         
-    def testputAll(self):  
-        items = [{"abc":"cdef"},{"123":"8989"}]
-        self.assertEqual(self.myRegion.put("108,109",items), True)
-        self.assertEqual(self.myRegion.delete("108,109"), True) 
+    def testput_all(self):  
+        item = {"107":{"change":"value_putall"}, "108":{"change":"delete_putall"}}
+        self.myRegion.put_all(items)
+        self.assertEqual(self.myRegion.put_all(item), True)
+        print self.myRegion[105]
+        self.assertEqual(self.myRegion.delete("107,108"), True)
         
         
     def testupdate(self):
