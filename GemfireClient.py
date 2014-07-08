@@ -118,9 +118,16 @@ class Region:
         return jsonpickle.decode(data.text)
 
     # Insert or updates data for a multiple keys specified by a hashtable
-    def put_all(self, items):
-        for key in items:
-            self.put(key, items[key])
+    def put_all(self, item):
+        sub_url = ','.join(str(keys) for keys in item)
+        url = self.base_url + "/" + sub_url
+        headers = {'content-type': 'application/json'}
+        jvalue = jsonpickle.encode(dict.items(item))
+        data = requests.put(url, data=jvalue, headers=headers) 
+        if data.status_code == 200:
+            return True
+        else:
+            return False
 
     # Updates the data in a region only if the specified key is present
     def update(self, key, value):
