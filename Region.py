@@ -63,7 +63,7 @@ class Region:
         sub_url = ','.join(str(keys) for keys in item)
         url = self.base_url + "/" + sub_url
         headers = {'content-type': 'application/json'}
-        jvalue = jsonpickle.encode(dict.items(item))
+        jvalue = jsonpickle.encode(item.values())
         data = requests.put(url, data=jvalue, headers=headers)
         if data.status_code == 200:
             return True
