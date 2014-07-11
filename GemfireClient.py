@@ -59,7 +59,7 @@ class GemfireClient:
     def run_query(self, query_string):
         url = self.base_url + "queries/adhoc?q=" + str(query_string)
         data = requests.get(url)
-        return jsonpickle.decode
+        return jsonpickle.decode(data.text)
         
         
     # List all stored function ID's stored on server
