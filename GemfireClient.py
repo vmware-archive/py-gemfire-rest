@@ -55,3 +55,22 @@ class GemfireClient:
         url = self.base_url + "queries/adhoc?q=" + str(query_string)
         data = requests.get(url)
         return jsonpickle.decode(data.text)
+
+
+
+
+    # List all stored function ID's stored on server
+    def list_all_function(self):
+        url = self.base_url + "functions"
+        data = requests.get(url).json()
+        return data
+    
+    # Run function 
+    def execute_function(self, func_id, value):
+        url = self.base_url + "functions/" + str(func_id) + "?onRegion=functionTest"
+        print url 
+        headers = {'content-type': 'application/json'}
+        jvalue = jsonpickle.encode(value)
+        data = requests.post(url, data=jvalue, headers=headers)
+        return data
+        
