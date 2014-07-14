@@ -1,5 +1,6 @@
 from Region import *
 
+
 class GemfireClient:
 
     # Initializes the Client Object
@@ -55,10 +56,7 @@ class GemfireClient:
         url = self.base_url + "queries/adhoc?q=" + str(query_string)
         data = requests.get(url)
         return jsonpickle.decode(data.text)
-
-
-
-
+        
     # List all stored function ID's stored on server
     def list_all_function(self):
         url = self.base_url + "functions"
