@@ -82,7 +82,7 @@ class Region:
             return False
 
     # Compares old values and if identical replaces with a new value
-    def compare_and_set(self, key, oldvalue,newvalue):
+    def compare_and_set(self, key, oldvalue, newvalue):
         url = self.base_url + "/" + str(key) + "?op=CAS"
         headers = {'content-type': 'application/json'}
         value = {"@old":oldvalue,"@new":newvalue}
