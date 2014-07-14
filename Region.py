@@ -82,9 +82,10 @@ class Region:
             return False
 
     # Compares old values and if identical replaces with a new value
-    def compare_and_set(self, key, value):
+    def compare_and_set(self, key, oldvalue,newvalue):
         url = self.base_url + "/" + str(key) + "?op=CAS"
         headers = {'content-type': 'application/json'}
+        value = {"@old":oldvalue,"@new":newvalue}
         jvalue = jsonpickle.encode(value)
         data = requests.put(url, data=jvalue, headers=headers)
         if data.status_code == 200:
