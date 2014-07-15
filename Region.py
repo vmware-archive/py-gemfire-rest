@@ -25,6 +25,7 @@ class Region:
         if data.status_code == 201:
             return True
         else:
+            print str(data.status_code) + ": " + data.reason
             return False
 
     # Updates or inserts data for a specified key
@@ -36,6 +37,7 @@ class Region:
         if data.status_code == 200:
             return True
         else:
+            print str(data.status_code) + ": " + data.reason
             return False
 
     # Returns all keys in the Region
@@ -50,13 +52,21 @@ class Region:
         sub_url = ','.join(str(key) for key in arg)
         url = self.base_url + "/" + sub_url + "?ignoreMissingKey=true"
         data = requests.get(url)
-        return jsonpickle.decode(data.text)
+        if data.status_code == 200:
+            return jsonpickle.decode(data.text)
+        else:
+            print str(data.status_code) + ": " + data.reason
+            return False
 
     # Method to support region[key] notion
     def __getitem__(self, key):
         url = self.base_url + "/" + str(key) + "?ignoreMissingKey=true"
         data = requests.get(url)
-        return jsonpickle.decode(data.text)
+        if data.status_code == 200:
+            return jsonpickle.decode(data.text)
+        else:
+            print str(data.status_code) + ": " + data.reason
+            return False
 
     # Insert or updates data for a multiple keys specified by a hashtable
     def put_all(self, item):
@@ -68,6 +78,7 @@ class Region:
         if data.status_code == 200:
             return True
         else:
+            print str(data.status_code) + ": " + data.reason
             return False
 
     # Updates the data in a region only if the specified key is present
@@ -79,6 +90,7 @@ class Region:
         if data.status_code == 200:
             return True
         else:
+            print str(data.status_code) + ": " + data.reason
             return False
 
     # Compares old values and if identical replaces with a new value
@@ -91,6 +103,7 @@ class Region:
         if data.status_code == 200:
             return True
         else:
+            print str(data.status_code) + ": " + data.reason
             return False
 
     # Deletes the corresponding data value for the specified key
@@ -101,6 +114,7 @@ class Region:
         if data.status_code == 200:
             return True
         else:
+            print str(data.status_code) + ": " + data.reason
             return False
 
     # Deletes all data in the Region
@@ -109,4 +123,5 @@ class Region:
         if data.status_code == 200:
             return True
         else:
+            print str(data.status_code) + ": " + data.reason
             return False
