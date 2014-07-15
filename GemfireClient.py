@@ -25,6 +25,7 @@ class GemfireClient:
             if n == name:
                 return Region(name, self.base_url)
         else:
+            print "Region " + name + " does not exist in the server"
             return False
 
     # Lists all stored Queries in the server
@@ -38,7 +39,11 @@ class GemfireClient:
         headers = {'content-type': 'application/json'}
         jvalue = jsonpickle.encode(query_args)
         data = requests.post(url, data=jvalue, headers=headers)
-        return jsonpickle.decode(data.text)
+        if data.status_code == 200:
+            return jsonpickle.decode(data.text)
+        else:
+            print str(data.status_code) + ": " + data.reason
+            return False
 
     # Creates a new Query and adds it to the server
     def new_query(self, query_id, query_string):
@@ -49,26 +54,34 @@ class GemfireClient:
         if data.status_code == 201:
             return True
         else:
+            print str(data.status_code) + ": " + data.reason
             return False
 
     # Runs an adhoc Query
     def adhoc_query(self, query_string):
         url = self.base_url + "queries/adhoc?q=" + str(query_string)
         data = requests.get(url)
-        return jsonpickle.decode(data.text)
-        
+        if data.status_code ==200:
+            return jsonpickle.decode(data.text)
+        else:
+            print str(data.status_code) + ": " + data.reason
+            return False
+
     # List all stored function ID's stored on server
-    def list_all_function(self):
+    def list_all_functions(self):
         url = self.base_url + "functions"
-        data = requests.get(url).json()
-        return data
+        data = requests.get(url)
+        return jsonpickle.decode(data.text)
     
     # Run function 
     def execute_function(self, func_id, value):
         url = self.base_url + "functions/" + str(func_id) + "?onRegion=functionTest"
-        print url 
         headers = {'content-type': 'application/json'}
         jvalue = jsonpickle.encode(value)
         data = requests.post(url, data=jvalue, headers=headers)
-        return data
+        if data.status_code == 200:
+            return jsonpickle.decode(data.text)
+        else:
+            print str(data.status_code) + ": " + data.reason
+            return False
         
