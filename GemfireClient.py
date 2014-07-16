@@ -1,4 +1,4 @@
-from Region import *
+from Repository import *
 import logging
 from datetime import datetime
 
@@ -38,18 +38,18 @@ class GemfireClient:
             self.error_response(data)
 
     # Initializes and returns a Region Object
-    def get_region(self, name):
+    def create_repository(self, name):
         data = requests.get(self.base_url).json()
         logging.debug("Sending request to " + self.base_url)
         rnames = data['regions']
         names = [region['name'] for region in rnames]
         for n in names:
             if n == name:
-                logging.debug("Returned back Region object for " + name)
-                return Region(name, self.base_url)
+                logging.debug("Returned back Repository object for " + name)
+                return Repository(name, self.base_url)
         else:
-            logging.debug("Region " + name + " does not exist in the server")
-            print "Region " + name + " does not exist in the server"
+            logging.debug("Repository " + name + " does not exist in the server")
+            print "Repository " + name + " does not exist in the server"
             return False
 
     # Lists all stored Queries in the server
@@ -133,4 +133,3 @@ class GemfireClient:
         else:
             logging.debug("Response from server: " + str(data.status_code) + " " + data.reason + " - " + data.text)
             return False
-        
