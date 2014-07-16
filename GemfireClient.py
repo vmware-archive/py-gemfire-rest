@@ -17,7 +17,7 @@ class GemfireClient:
     def connection(self):
         data = requests.get(self.base_url)
         if data.status_code == 200:
-            logging.info("Client successfully connected to server")
+            logging.info("Client successfully connected to server at " + self.hostname)
             return True
         else:
             self.error_response(data)
@@ -82,7 +82,7 @@ class GemfireClient:
         data = requests.post(url, data=jvalue, headers=headers)
         logging.debug("Sending request to " + url)
         if data.status_code == 201:
-            logging.debug("Query was successfully added to the server")
+            logging.debug("Query " + query_id + " was successfully added to the server")
             return True
         else:
             self.error_response(data)
@@ -122,7 +122,6 @@ class GemfireClient:
         else:
             self.error_response(data)
 
-    # Processes HTTP error responses
     def error_response(self,data):
         if data!=400 or data!=409 or data!=405:
             logging.warning("Response from server: " + str(data.status_code) + " " + data.reason + " - " + data.text)
@@ -131,3 +130,4 @@ class GemfireClient:
         else:
             logging.debug("Response from server: " + str(data.status_code) + " " + data.reason + " - " + data.text)
             return False
+        
