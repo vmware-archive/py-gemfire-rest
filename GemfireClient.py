@@ -2,9 +2,9 @@ from Region import *
 import logging
 from datetime import datetime
 
+
 class GemfireClient:
 
-    # Initializes the Client Object
     # Initializes the Client Object
     def __init__(self, hostname, port, debug_mode):
         self.hostname = hostname
