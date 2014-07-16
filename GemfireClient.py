@@ -5,13 +5,15 @@ from datetime import datetime
 class GemfireClient:
 
     # Initializes the Client Object
-    def __init__(self, hostname, port):
+    # Initializes the Client Object
+    def __init__(self, hostname, port, debug_mode):
         self.hostname = hostname
         self.port = port
         self.base_url = "http://" + hostname + ":" + str(port) + "/gemfire-api/v1/"
-        logging.basicConfig(filename=(datetime.now().strftime('pyrest_%H_%M_%d_%m_%Y.log')), level=logging.DEBUG,format=('%(filename)s: ''%(levelname)s: ''%(funcName)s(): ''%(lineno)d:\t''%(message)s'))
-        logging.info('Started Client')
-        self.connection()
+        if debug_mode == True:
+            logging.basicConfig(filename=(datetime.now().strftime('pyrest_%H_%M_%d_%m_%Y.log')), level=logging.DEBUG,format=('%(filename)s: ''%(levelname)s: ''%(funcName)s(): ''%(lineno)d:\t''%(message)s'))
+            logging.info('Started Client')
+        self.connection() 
 
     # Checks connection to the server
     def connection(self):
