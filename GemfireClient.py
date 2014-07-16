@@ -122,6 +122,7 @@ class GemfireClient:
         else:
             self.error_response(data)
 
+    # Processes HTTP error responses
     def error_response(self,data):
         if data!=400 or data!=409 or data!=405:
             logging.warning("Response from server: " + str(data.status_code) + " " + data.reason + " - " + data.text)
