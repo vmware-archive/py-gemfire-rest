@@ -37,7 +37,7 @@ class GemfireClient:
         else:
             self.error_response(data)
 
-    # Initializes and returns a Region Object
+    # Initializes and returns a Repository Object
     def create_repository(self, name):
         data = requests.get(self.base_url).json()
         logging.debug("Sending request to " + self.base_url)
