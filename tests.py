@@ -125,6 +125,18 @@ class SimpleTestCase(unittest.TestCase):
     def testclear(self):
         clearall = self.myRegion.clear()    
         self.assertEqual(clearall, True)
+        
+        
+        
+   def testlistallfunctions(self):
+        data = self.client.list_all_function()
+        print data
+        
+   def testrunfunction(self):
+        value = {"args": [2]}
+        
+        data = self.client.execute_function("MostValuedCustomer", value)
+        print data
    
         
     
