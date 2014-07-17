@@ -46,7 +46,8 @@ class GemfireClient:
         for n in names:
             if n == name:
                 logging.debug("Returned back Repository object for " + name)
-                return Repository(name, self.base_url)
+                type = rnames[names.index(name)]["type"]
+                return Repository(name, self.base_url, type)
         else:
             logging.debug("Repository " + name + " does not exist in the server")
             print "Repository " + name + " does not exist in the server"
