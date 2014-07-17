@@ -8,7 +8,7 @@ class Region:
     # Initializes a Region Object
     def __init__(self, name, base_url):
         self.name = name
-        self.base_url = base_url + name
+        self.base_url = base_url 
 
     # Returns all the data in a Region
     def get_all(self):
