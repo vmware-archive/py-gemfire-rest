@@ -5,7 +5,7 @@ class Repository:
 
     def __init__(self,name, base_url):
         self.name = name
-        self.base_url = base_url + name
+        self.base_url = base_url 
         self.region = self.get_region()
 
     def delete(self,id):
@@ -15,7 +15,7 @@ class Repository:
         temp = ""
         temp = ' , '.join(str(key.id)for key in objects)
         print temp
-        return self.myRegion.delete(temp)
+        return self.region.delete(temp)
     
 
     def delete_all(self):
@@ -35,7 +35,7 @@ class Repository:
         temp = ""
         temp = ' , '.join(str(key.id)for key in objects)
         print temp
-        return self.myRegion.get(temp)
+        return self.region.get(temp)
 
     def find(self,id):
         self.region.get(id)
