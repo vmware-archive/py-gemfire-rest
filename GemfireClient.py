@@ -113,8 +113,8 @@ class GemfireClient:
             self.error_response(data)
     
     # Run function 
-    def execute_function(self, func_id, value):
-        url = self.base_url + "functions/" + str(func_id) + "?onRegion=functionTest"
+    def execute_function(self, region_name, func_id, value):
+        url = self.base_url + "functions/" + str(func_id) + "?onRegion=" + str(region_name)
         headers = {'content-type': 'application/json'}
         jvalue = jsonpickle.encode(value)
         data = requests.post(url, data=jvalue, headers=headers)
