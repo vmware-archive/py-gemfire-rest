@@ -11,8 +11,12 @@ class Repository:
     def delete(self,id):
         self.region.delete(id)
 
-    def delete_entity(self, entity):
-        self.region.delete(entity.id)
+    def delete(self, objects):
+        temp = ""
+        temp = ' , '.join(str(key.id)for key in objects)
+        print temp
+        return self.myRegion.delete(temp)
+    
 
     def delete_all(self):
         self.region.clear()
@@ -26,6 +30,12 @@ class Repository:
 
     def find_all(self):
         self.region.get_all()
+        
+    def find_all(self, objects):
+        temp = ""
+        temp = ' , '.join(str(key.id)for key in objects)
+        print temp
+        return self.myRegion.get(temp)
 
     def find(self,id):
         self.region.get(id)
