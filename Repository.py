@@ -14,7 +14,6 @@ class Repository:
     def delete_entities(self, objects):
         temp = ""
         temp = ' , '.join(str(key.id)for key in objects)
-        print temp
         return self.region.delete(temp)
     
 
