@@ -5,13 +5,13 @@ class Repository:
 
     def __init__(self,name, base_url):
         self.name = name
-        self.base_url = base_url 
+        self.base_url = base_url + name
         self.region = self.get_region()
 
     def delete(self,id):
-        self.region.delete(id)
+        return self.region.delete(id)
 
-    def delete_enitites(self, objects):
+    def delete_entities(self, objects):
         temp = ""
         temp = ' , '.join(str(key.id)for key in objects)
         print temp
@@ -19,7 +19,7 @@ class Repository:
     
 
     def delete_all(self):
-        self.region.clear()
+        return self.region.clear()
 
     def exists(self, id):
         boolean = self.region.get(id)
@@ -29,25 +29,25 @@ class Repository:
             return False
 
     def find_all(self):
-        self.region.get_all()
+        return self.region.get_all()
         
-    def find_entities(self, objects):
+    
+    def find(self,id):
+        return self.region.get(id)
+    
+    def find_id(self, ids):
         temp = ""
-        temp = ' , '.join(str(key.id)for key in objects)
-        print temp
+        temp = ",".join(str(key)for key in ids)
         return self.region.get(temp)
 
-    def find(self,id):
-        self.region.get(id)
-
     def save(self, entity):
-        self.region.put(entity.id,entity)
+        return self.region.put(entity.id,entity)
 
     def save_all(self, entities):
         item = {}
         for entity in entities:
             item[entity.id] = entity
-        self.region.put_all(item)
+        return self.region.put_all(item)
 
     def get_region(self):
         return Region(self.name, self.base_url)
