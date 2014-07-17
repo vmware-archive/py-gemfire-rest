@@ -9,16 +9,19 @@ class Repository:
         self.type = type
         self.region = self.get_region()
 
-    def delete(self,id):
-        return self.region.delete(id)
-
-    def delete_entities(self, objects):
-        temp = ' , '.join(str(key.id)for key in objects)
-        return self.region.delete(temp)
+    ef delete(self, objects):
+        if type(objects) is list:
+            temp = ""
+            temp = ' , '.join(str(key.id)for key in objects)
+            return self.region.delete(temp)
+        else:
+            return self.region.delete(objects)
+    
 
     def delete_all(self):
         return self.region.clear()
-
+        
+        
     def exists(self, id):
         boolean = self.region.get(id)
         if boolean != False:
@@ -28,23 +31,25 @@ class Repository:
 
     def find_all(self):
         return self.region.get_all()
-        
     
-    def find(self,id):
-        return self.region.get(id)
     
-    def find_id(self, ids):
-        temp = ",".join(str(key)for key in ids)
-        return self.region.get(temp)
+    def find(self, ids):
+        if type(ids) is list:
+            temp = ""
+            temp = ",".join(str(key)for key in ids)
+            print temp
+            return self.region.get(temp)
+        else:
+            return self.region.get(ids)
 
-    def save(self, entity):
-        return self.region.put(entity.id,entity)
-
-    def save_all(self, entities):
-        item = {}
-        for entity in entities:
-            item[entity.id] = entity
-        return self.region.put_all(item)
+    def save(self, entities):
+        if type(entities) is list:
+            item = {}
+            for entity in entities:
+                item[entity.id] = entity
+                return self.region.put_all(item)
+        else:
+            return self.region.put(entities.id,entities)
 
     def get_region(self):
         return Region(self.name, self.base_url, self.type)
