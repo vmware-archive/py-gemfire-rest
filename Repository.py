@@ -9,7 +9,7 @@ class Repository:
         self.type = type
         self.region = self.get_region()
 
-    ef delete(self, objects):
+    def delete(self, objects):
         if type(objects) is list:
             temp = ""
             temp = ' , '.join(str(key.id)for key in objects)
