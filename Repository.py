@@ -3,19 +3,18 @@ from Region import *
 
 class Repository:
 
-    def __init__(self,name, base_url):
+    def __init__(self,name, base_url,type):
         self.name = name
         self.base_url = base_url + name
+        self.type = type
         self.region = self.get_region()
 
     def delete(self,id):
         return self.region.delete(id)
 
     def delete_entities(self, objects):
-        temp = ""
         temp = ' , '.join(str(key.id)for key in objects)
         return self.region.delete(temp)
-    
 
     def delete_all(self):
         return self.region.clear()
@@ -35,7 +34,6 @@ class Repository:
         return self.region.get(id)
     
     def find_id(self, ids):
-        temp = ""
         temp = ",".join(str(key)for key in ids)
         return self.region.get(temp)
 
@@ -49,4 +47,4 @@ class Repository:
         return self.region.put_all(item)
 
     def get_region(self):
-        return Region(self.name, self.base_url)
+        return Region(self.name, self.base_url, self.type)
