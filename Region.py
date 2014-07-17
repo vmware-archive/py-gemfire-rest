@@ -6,9 +6,10 @@ import logging
 class Region:
 
     # Initializes a Region Object
-    def __init__(self, name, base_url):
+    def __init__(self, name, base_url, type):
         self.name = name
-        self.base_url = base_url 
+        self.base_url = base_url
+        self.type = type
 
     # Returns all the data in a Region
     def get_all(self):
@@ -138,12 +139,17 @@ class Region:
 
     # Deletes all data in the Region
     def clear(self):
-        data = requests.delete(self.base_url)
-        if data.status_code == 200:
-            logging.debug("All data was cleared from the region")
-            return True
-        else:
-            self.error_response(data)
+        if self.type == "REPLICATE":
+            data = requests.delete(self.base_url)
+            if data.status_code == 200:
+                logging.debug("All data was cleared from the region")
+                return True
+            else:
+                self.error_response(data)
+        if self.type == "PARTITION":
+            keys = self.keys()
+            temp = ",".join(str(key)for key in keys)
+            self.delete(temp)
 
     # Processes HTTP error responses
     def error_response(self,data):
