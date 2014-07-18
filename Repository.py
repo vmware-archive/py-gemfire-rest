@@ -47,7 +47,7 @@ class Repository:
             item = {}
             for entity in entities:
                 item[entity.id] = entity
-                return self.region.put_all(item)
+            return self.region.put_all(item)
         else:
             return self.region.put(entities.id,entities)
 
