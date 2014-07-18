@@ -27,10 +27,10 @@ class Repository:
     # Checks whether an Object with the given id exists
     def exists(self, id):
         boolean = self.region.get(id)
-        if boolean != False:
-            return True
-        else:
+        if boolean == None:
             return False
+        else:
+            return True
 
     # Returns all data in the region
     def find_all(self):
