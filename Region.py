@@ -150,6 +150,7 @@ class Region:
             keys = self.keys()
             temp = ",".join(str(key)for key in keys)
             self.delete(temp)
+            return True
 
     # Processes HTTP error responses
     def error_response(self,data):
