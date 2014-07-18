@@ -86,14 +86,17 @@ class SimpleTestCase(unittest.TestCase):
     
     def test_find(self):
         name = "abc"
-        id = 001
+        id = 02
         surname = "def"  
         self.myRepo.save(Customer(name,id,surname))
         name1 = "abc"
-        id1 = 0011
+        id1 = 03
         surname1 = "def"  
-        self.myRepo.save(Customer(name1,id1,surname1))
-        self.myRepo.find([001,0011])  
+        c1 = Customer(name1, id1, surname1)
+        c2 = Customer(name, id, surname)
+        self.myRepo.save([c1,c2])
+        self.myRepo.find([03,02])
+        
         
         
     def test_findall(self):
