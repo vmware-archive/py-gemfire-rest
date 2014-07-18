@@ -1,143 +1,252 @@
 import unittest  
 from GemfireClient import *
+import os
 
 
 class SimpleTestCase(unittest.TestCase):
     def setUp(self):
         hostname = "mclaren.gemstone.com"
         port = 8080
-        self.client = GemfireClient(hostname, port)
-        self.myRegion = self.client.get_region("products")
+        debug_mode = False
+        self.client = GemfireClient(hostname, port, debug_mode)
+        self.myRepo = self.client.create_repository("orders")
+        self.myRegion = self.myRepo.get_region()
         
+        #conn = self.client.connection()
+          
     def test_list_all_regions(self):
         allregions = self.client.list_all_regions()
-        self.assertIsInstance(allregions, list)
+        print allregions
+        
+        #self.assertIsInstance(allregions, list)nano
         self.assertEqual(allregions[0], 'products')
-        self.assertEqual(allregions[1], 'orders')
-        self.assertEqual(allregions[2], 'customer')
+        self.assertEqual(allregions[1], 'functionTest')
+        self.assertEqual(allregions[2], 'orders')
+        self.assertEqual(allregions[4], 'customer')
         
     def testget_region(self):
-        productRegion = self.client.get_region("products")
-        self.assertNotEqual(False, productRegion)
+        productRegion = self.myRepo.get_region()
+        print productRegion
+        #self.assertNotEqual(False, productRegion)
         
-    '''def testnewquery(self):
-        newquery = self.client.newQuery("cust0018","SELECT * FROM /products WHERE id = 0018")
-        self.assertEqual(newquery, True)'''
+    
+        
+    def testnew_query(self):
+        random_string = os.urandom(4)
+        newquery = self.client.new_query( random_string,"SELECT * FROM /orderss")
+        self.assertEqual(newquery, True)
         
         
     def test_list_all_queries(self):
         allqueries = self.client.list_all_queries()
-        #print allqueries
-        #self.assertEqual(allqueries, dict)
+        print allqueries
+        
+    def test_repo(self):
+        repo = self.myRepo.get_region()
+        print repo
+        
+    def test_repo_delete(self):
+        name = "abc"
+        id = 001
+        surname = "def"  
+        self.myRepo.save(Customer(name,id,surname))
+        deleted = self.myRepo.delete(001)
+        print deleted
+        
+    def test_save(self):
+        name = "abc"
+        id = 002
+        surname = "def"  
+        saved = self.myRepo.save(Customer(name,id,surname))
+        print saved
+        self.myRepo.delete(002)
+    
+    def test_findone(self):
+        name = "abc"
+        id = 001
+        surname = "def"  
+        self.myRepo.save(Customer(name,id,surname))
+        findone = self.myRepo.find(001)  
+        print findone
+        
+    def test_findall(self):
+        find = self.myRepo.find_all()
+        print find
+    
+    def test_exists(self):
+        name = "abc"
+        id = 10
+        surname = "def"  
+        self.myRepo.save(Customer(name,id,surname))
+        exists = self.myRepo.exists(10)
+        print exists
+        self.myRepo.delete(10)
+    
+    def test_delete(self):
+        name = "abc"
+        id = 207
+        surname = "def"  
+        name1 = "abc"
+        id1 = 107
+        surname1 = "def" 
+        c1 = Customer(name1, id1, surname1)
+        c2 = Customer(name, id, surname)
+        c3 = [c1,c2]
+        self.myRepo.save(c3)
+        saved = self.myRepo.delete(107)
+        print saved
+        #deleted = self.myRepo.delete(c1,c2)
+        #print deleted
         
     
-    def testrun_query(self):
-        runquery = self.client.run_query('SELECT * FROM /orders')
-        self.assertIsInstance(runquery, object)
+       
+
+    '''def testrun_query(self):
+        qu = {}
+        runquery = self.client.run_query('my_query2', qu)
+        #self.assertIsInstance(runquery, object)'''
          
-    
-    def testgetQuery(self):
-        query = self.client.get_query("cust0013")
-        self.assertNotEqual(False, query)
         
     def testcreate(self):
-        value = {"change":"random"}
-        result = self.myRegion.create(95, value)
+        name1 = "abc"
+        id1 = 13
+        surname1 = "def" 
+        c1 = Customer(name1, id1, surname1)
+        result = self.myRegion.create(13,c1)
         self.assertEqual(result, True)
-        self.myRegion.delete(95)
-        
+        self.myRegion.delete(13)
+        #result = self.myRegion.create(95, value)
         
             
     def testkeys(self):
-        value = {"change":"random"}
-        result = self.myRegion.create(92, value)
+        name1 = "abc"
+        id1 = 78
+        surname1 = "def" 
+        c1 = Customer(name1, id1, surname1)
+        result = self.myRegion.create(78, c1)
         self.assertEqual(result, True)
         keys = self.myRegion.keys()
-        #print keys
-        self.assertEqual(keys[0], '92')
-        self.myRegion.delete(92)
+        print keys
+        self.myRegion.delete(78)
         
         
        
      
     def testput(self):
-        putvalue = {"random":"change"}
-        self.assertEqual(self.myRegion.put(93, putvalue), True)
-        self.myRegion.delete(93)
+        name1 = "abc"
+        id1 = 14
+        surname1 = "def" 
+        c1 = Customer(name1, id1, surname1)
+        self.assertEqual(self.myRegion.put(14, c1), True)
+        self.myRegion.delete(14)
         
         
         
     def testget(self): 
-        putvalue = {"random":"change"}
-        self.assertEqual(self.myRegion.put(96, putvalue), True)
-        data = self.myRegion.get("96")
-        #print data
+        name1 = "abc"
+        id1 = 15
+        surname1 = "def" 
+        c1 = Customer(name1, id1, surname1)
+        self.assertEqual(self.myRegion.put(15, c1), True)
+        data = self.myRegion.get(15)
+        print data
+        self.myRegion.delete(15)
         #self.assertEqual(data,json)
         
     def testdirget(self):
-        items = [{"abc":"cdef"},{"123":"8989"}]
-        self.assertEqual(self.myRegion.put("108,109",items), True)
-        data1 = self.myRegion[108]
-        data2 = self.myRegion[109]
-        self.assertEqual(self.myRegion.delete("108,109"), True)
+        name1 = "abc"
+        id1 = 15
+        surname1 = "def" 
+        c1 = Customer(name1, id1, surname1)
+        self.assertEqual(self.myRegion.put(15, c1), True)
+        data1 = self.myRegion[15]
+        print data1
+        self.assertEqual(self.myRegion.delete(15), True)
+         
         
         
-        
-        
-    def testput_all(self):  
-        item = {"107":{"change":"value_putall"}, "108":{"change":"delete_putall"}}
-        self.myRegion.put_all(items)
+    def testputAll(self):  
+        name1 = "abc"
+        id1 = 93
+        surname1 = "def" 
+        c1 = Customer(name1, id1, surname1)
+        name = "abc"
+        id = 94
+        surname = "def" 
+        c2 = Customer(name, id, surname)
+        item = {93:c1, 94:c2}
         self.assertEqual(self.myRegion.put_all(item), True)
-        print self.myRegion[105]
-        self.assertEqual(self.myRegion.delete("107,108"), True)
+        self.assertEqual(self.myRegion.delete(93,94), True)
+       
         
         
     def testupdate(self):
-        items = [{"abc":"cdef"},{"123":"8989"}]
-        self.assertEqual(self.myRegion.put("93",items), True) 
-        value_update = {"change":"random"}
-        updt = self.myRegion.update(93, value_update)
+        name1 = "abc"
+        id1 = 93
+        surname1 = "def" 
+        c1 = Customer(name1, id1, surname1)
+        name = "abc"
+        id = 94
+        surname = "def" 
+        c2 = Customer(name, id, surname)
+        item = {93:c1, 94:c2}
+        
+        self.assertEqual(self.myRegion.put_all(item), True)
+        name3 = "abc"
+        id3 = 95
+        surname3 = "def" 
+        c3 = Customer(name3, id3, surname3)
+        updt = self.myRegion.update(94, c3)
         self.assertEqual(updt, True)
-        #self.assertEqual(self.myRegion.get(93),'{"change":"change12400"}')
+        self.assertEqual(self.myRegion.delete(93,94), True)
         
         
     def testcompareAndSet(self): 
-        comp_value = {"@old":{"change":"random"}, "@new":{"change":"change"}}
-        self.assertEqual(self.myRegion.compare_and_set(93, comp_value), True)
+        name1 = "abc"
+        id1 = 94
+        surname1 = "def" 
+        c1 = Customer(name1, id1, surname1)
+        name = "abc"
+        id = 96
+        surname = "def" 
+        c2 = Customer(name, id, surname)
+        self.assertEqual(self.myRegion.put(94, c1), True)
+        self.assertEqual(self.myRegion.compare_and_set(94,c1,c2), True)
+        self.assertEqual(self.myRegion.delete(94), True)
         
         
     def testgetAll(self):
         self.assertIsInstance(self.myRegion.get_all(), object)
-        data = self.myRegion.get_all()
-        #print data
     
+      
     def testiterator(self):
         for key in self.myRegion.keys():
             print key
           
     def testdelete(self):
-        items = {"change":"value_putall"} 
-        self.assertEqual(self.myRegion.put("95",items), True)
-        self.assertEqual(self.myRegion.delete("95"), True)
-        keys = self.myRegion.keys()
-        #print keys
+        name1 = "abc"
+        id1 = 94
+        surname1 = "def" 
+        c1 = Customer(name1, id1, surname1)
+        self.assertEqual(self.myRegion.put(94,c1), True)
+        self.assertEqual(self.myRegion.delete(94), True)
         
-    def testclear(self):
+        
+    '''def testclear(self):
         clearall = self.myRegion.clear()    
-        self.assertEqual(clearall, True)
+        self.assertEqual(clearall, True)'''
         
-        
-        
-   def testlistallfunctions(self):
-        data = self.client.list_all_function()
+    def testlistallfunctions(self):
+        data = self.client.list_all_functions()
         print data
         
-   def testrunfunction(self):
+    def testrunfunction(self):
         value = {"args": [2]}
         
-        data = self.client.execute_function("MostValuedCustomer", value)
+        data = self.client.execute_function("functionTest","MostValuedCustomer", value)
         print data
-   
+        
+            
         
     
         
