@@ -16,73 +16,112 @@ class SimpleTestCase(unittest.TestCase):
           
     def test_list_all_regions(self):
         allregions = self.client.list_all_regions()
-        print allregions
+        self.assertIsInstance(allregions, list)
         
-        #self.assertIsInstance(allregions, list)nano
-        self.assertEqual(allregions[0], 'products')
-        self.assertEqual(allregions[1], 'functionTest')
-        self.assertEqual(allregions[2], 'orders')
-        self.assertEqual(allregions[4], 'customer')
         
-    def testget_region(self):
-        productRegion = self.myRepo.get_region()
-        print productRegion
-        #self.assertNotEqual(False, productRegion)
+    def test_get_repo(self):
+        productRepo = self.client.create_repository("products")
+        self.assertNotEqual(False, productRepo)
         
     
         
-    def testnew_query(self):
+    def test_new_query(self):
         random_string = os.urandom(4)
-        newquery = self.client.new_query( random_string,"SELECT * FROM /orderss")
+        newquery = self.client.new_query(random_string,"SELECT * FROM /orders")
         self.assertEqual(newquery, True)
+    
+    def test_adhoc_query(self):
+        name1 = "abc"
+        id1 = 13
+        surname1 = "def" 
+        c1 = Customer(name1, id1, surname1)
+        result = self.myRegion.create(13,c1)
+        self.assertEqual(result, True)
+        newquery = self.client.adhoc_query("SELECT * FROM /orders")
+        result = self.myRegion.delete(13)
+        self.assertEqual(result, True)
         
         
     def test_list_all_queries(self):
         allqueries = self.client.list_all_queries()
-        print allqueries
+   
+        
+    def test_list_all_functions(self):
+        data = self.client.list_all_functions()
+  
+    def test_run_function(self):
+        value = {"args": [2]}
+        data = self.client.execute_function("functionTest","MostValuedCustomer", value)
+    
+        
+        
         
     def test_repo(self):
         repo = self.myRepo.get_region()
-        print repo
+      
         
-    def test_repo_delete(self):
-        name = "abc"
-        id = 001
-        surname = "def"  
-        self.myRepo.save(Customer(name,id,surname))
-        deleted = self.myRepo.delete(001)
-        print deleted
+   
         
-    def test_save(self):
+    def test_save_singleobject(self):
         name = "abc"
         id = 002
         surname = "def"  
-        saved = self.myRepo.save(Customer(name,id,surname))
-        print saved
+        result = self.myRepo.save(Customer(name,id,surname))
+        self.assertEqual(result, True)
         self.myRepo.delete(002)
+        
+    def test_save_listofobject(self):
+        name = "abc"
+        id = 002
+        surname = "def" 
+        name1 = "abc"
+        id1 = 107
+        surname1 = "def"
+        c1 = Customer(name1, id1, surname1)
+        c2 = Customer(name, id, surname)
+        c3 = [c1,c2]
+        result = self.myRepo.save(c3)
+        self.assertEqual(result, True)
+        self.myRepo.delete(c3)
     
-    def test_findone(self):
+    def test_find(self):
         name = "abc"
         id = 001
         surname = "def"  
         self.myRepo.save(Customer(name,id,surname))
-        findone = self.myRepo.find(001)  
-        print findone
+        name1 = "abc"
+        id1 = 0011
+        surname1 = "def"  
+        self.myRepo.save(Customer(name1,id1,surname1))
+        self.myRepo.find([001,0011])  
+        
         
     def test_findall(self):
-        find = self.myRepo.find_all()
-        print find
+        self.myRepo.find_all()
+        
     
     def test_exists(self):
         name = "abc"
         id = 10
         surname = "def"  
         self.myRepo.save(Customer(name,id,surname))
-        exists = self.myRepo.exists(10)
-        print exists
+        result = self.myRepo.exists(10)
+        self.assertEqual(result, True)
         self.myRepo.delete(10)
+        
+    def test_repo_get_region(self):
+        find = self.myRepo.get_region()
+        return find
     
-    def test_delete(self):
+    def test_repo_delete_id(self):
+        name = "abc"
+        id = 001
+        surname = "def"  
+        self.myRepo.save(Customer(name,id,surname))
+        result = self.myRepo.delete(001)
+        self.assertEqual(result, True)
+    
+    def test_delete_listobject(self):
         name = "abc"
         id = 207
         surname = "def"  
@@ -93,21 +132,28 @@ class SimpleTestCase(unittest.TestCase):
         c2 = Customer(name, id, surname)
         c3 = [c1,c2]
         self.myRepo.save(c3)
-        saved = self.myRepo.delete(107)
-        print saved
-        #deleted = self.myRepo.delete(c1,c2)
-        #print deleted
+        result = self.myRepo.delete(c3)
+        self.assertEqual(result, True)
+        
+        
+    def test_delete_singleject(self):
+        name = "abc"
+        id = 207
+        surname = "def"  
+        c2 = Customer(name, id, surname)
+        self.myRepo.save(c2)
+        saved = self.myRepo.delete(c2)
         
     
        
 
-    '''def testrun_query(self):
-        qu = {}
-        runquery = self.client.run_query('my_query2', qu)
-        #self.assertIsInstance(runquery, object)'''
+    def testrun_query(self):
+        qu = ["1 : 2"]
+        runquery = self.client.run_query("try", qu)
+        #self.assertIsInstance(runquery, object)
          
         
-    def testcreate(self):
+    def test_create(self):
         name1 = "abc"
         id1 = 13
         surname1 = "def" 
@@ -118,21 +164,20 @@ class SimpleTestCase(unittest.TestCase):
         #result = self.myRegion.create(95, value)
         
             
-    def testkeys(self):
+    def test_keys(self):
         name1 = "abc"
         id1 = 78
         surname1 = "def" 
         c1 = Customer(name1, id1, surname1)
         result = self.myRegion.create(78, c1)
         self.assertEqual(result, True)
-        keys = self.myRegion.keys()
-        print keys
+        self.myRegion.keys()
         self.myRegion.delete(78)
         
         
        
      
-    def testput(self):
+    def test_put(self):
         name1 = "abc"
         id1 = 14
         surname1 = "def" 
@@ -142,30 +187,30 @@ class SimpleTestCase(unittest.TestCase):
         
         
         
-    def testget(self): 
+    def test_get(self): 
         name1 = "abc"
         id1 = 15
         surname1 = "def" 
         c1 = Customer(name1, id1, surname1)
         self.assertEqual(self.myRegion.put(15, c1), True)
-        data = self.myRegion.get(15)
-        print data
+        result = self.myRegion.get(15)
+        #self.assertEqual(result, object)
         self.myRegion.delete(15)
         #self.assertEqual(data,json)
         
-    def testdirget(self):
+    def test_dirget(self):
         name1 = "abc"
         id1 = 15
         surname1 = "def" 
         c1 = Customer(name1, id1, surname1)
         self.assertEqual(self.myRegion.put(15, c1), True)
-        data1 = self.myRegion[15]
-        print data1
+        result = self.myRegion[15]
+        #self.assertEqual(result, object)
         self.assertEqual(self.myRegion.delete(15), True)
          
         
         
-    def testputAll(self):  
+    def test_putAll(self):  
         name1 = "abc"
         id1 = 93
         surname1 = "def" 
@@ -180,7 +225,7 @@ class SimpleTestCase(unittest.TestCase):
        
         
         
-    def testupdate(self):
+    def test_update(self):
         name1 = "abc"
         id1 = 93
         surname1 = "def" 
@@ -201,7 +246,7 @@ class SimpleTestCase(unittest.TestCase):
         self.assertEqual(self.myRegion.delete(93,94), True)
         
         
-    def testcompareAndSet(self): 
+    def test_compare_And_Set(self): 
         name1 = "abc"
         id1 = 94
         surname1 = "def" 
@@ -215,15 +260,15 @@ class SimpleTestCase(unittest.TestCase):
         self.assertEqual(self.myRegion.delete(94), True)
         
         
-    def testgetAll(self):
+    def test_get_All(self):
         self.assertIsInstance(self.myRegion.get_all(), object)
     
       
-    def testiterator(self):
+    def test_iterator(self):
         for key in self.myRegion.keys():
             print key
           
-    def testdelete(self):
+    def test_delete(self):
         name1 = "abc"
         id1 = 94
         surname1 = "def" 
@@ -232,24 +277,11 @@ class SimpleTestCase(unittest.TestCase):
         self.assertEqual(self.myRegion.delete(94), True)
         
         
-    '''def testclear(self):
+    def testclear(self):
         clearall = self.myRegion.clear()    
-        self.assertEqual(clearall, True)'''
-        
-    def testlistallfunctions(self):
-        data = self.client.list_all_functions()
-        print data
-        
-    def testrunfunction(self):
-        value = {"args": [2]}
-        
-        data = self.client.execute_function("functionTest","MostValuedCustomer", value)
-        print data
-        
-            
+        self.assertEqual(clearall, True)
         
     
-        
 
             
     
