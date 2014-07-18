@@ -60,17 +60,4 @@ class Repository:
 
 
 
-    # Deletes all data in the Region
-    def clear(self):
-        if self.type == "REPLICATE":
-            data = requests.delete(self.base_url)
-            if data.status_code == 200:
-                logging.debug("All data was cleared from the region")
-                return True
-            else:
-                self.error_response(data)
-        if self.type == "PARTITION":
-            keys = self.keys()
-            temp = ",".join(str(key)for key in keys)
-            self.delete(temp)
-            return True
+    
