@@ -66,7 +66,8 @@ class GemfireClient:
 
     # Runs the Query with specified parameters
     def run_query(self,query_id, query_args):
-        url = self.base_url + "queries/" + query_id
+        args = "{" + "'args:'" + " [" + str(query_args) + "]}"
+        url = self.base_url + "queries/" + query_id 
         headers = {'content-type': 'application/json'}
         jvalue = jsonpickle.encode(query_args)
         data = requests.post(url, data=jvalue, headers=headers)
