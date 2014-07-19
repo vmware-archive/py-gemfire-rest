@@ -10,10 +10,12 @@ class GemfireClient:
         self.hostname = hostname
         self.port = port
         self.base_url = "http://" + hostname + ":" + str(port) + "/gemfire-api/v1/"
-        if debug_mode == True:
-            logging.basicConfig(filename=(datetime.now().strftime('pyrest_%H_%M_%d_%m_%Y.log')), level=logging.DEBUG,format=('%(filename)s: ''%(levelname)s: ''%(funcName)s(): ''%(lineno)d:\t''%(message)s'))
+        if debug_mode:
+            logging.basicConfig(filename=(datetime.now().strftime('pyrest_%H_%M_%d_%m_%Y.log')), level=logging.DEBUG,
+                                format=(
+                                    '%(filename)s: ''%(levelname)s: ''%(funcName)s(): ''%(lineno)d:\t''%(message)s'))
             logging.info('Started Client')
-        self.connection() 
+        self.connection()
 
     # Checks connection to the server
     def connection(self):
@@ -31,7 +33,7 @@ class GemfireClient:
         fdata = jsonpickle.decode(data.text)
         rnames = fdata['regions']
         names = [region['name'] for region in rnames]
-        if data.status_code ==200:
+        if data.status_code == 200:
             logging.debug("Response from server: " + " ,".join(data))
             return names
         else:
@@ -58,22 +60,22 @@ class GemfireClient:
         data = requests.get(self.base_url + "/queries")
         logging.debug("Sending request to " + self.base_url + "/queries")
         fdata = jsonpickle.decode(data.text)
-        if data.status_code ==200:
-            logging.debug("Response from server: " + " ," .join(data))
+        if data.status_code == 200:
+            logging.debug("Response from server: " + " ,".join(data))
             return fdata["queries"]
         else:
             self.error_response(data)
 
     # Runs the Query with specified parameters
-    def run_query(self,query_id, query_args):
+    def run_query(self, query_id, query_args):
         args = "{" + "'args:'" + " [" + str(query_args) + "]}"
-        url = self.base_url + "queries/" + query_id 
+        url = self.base_url + "queries/" + query_id
         headers = {'content-type': 'application/json'}
-        jvalue = jsonpickle.encode(query_args)
+        jvalue = jsonpickle.encode(args)
         data = requests.post(url, data=jvalue, headers=headers)
         logging.debug("Sending request to " + url)
         if data.status_code == 200:
-            logging.debug("Response from server: " + " ," .join(data))
+            logging.debug("Response from server: " + " ,".join(data))
             return jsonpickle.decode(data.text)
         else:
             self.error_response(data)
@@ -96,8 +98,8 @@ class GemfireClient:
         url = self.base_url + "queries/adhoc?q=" + str(query_string)
         data = requests.get(url)
         logging.debug("Sending request to " + url)
-        if data.status_code ==200:
-            logging.debug("Response from server: " + " ," .join(data))
+        if data.status_code == 200:
+            logging.debug("Response from server: " + " ,".join(data))
             return jsonpickle.decode(data.text)
         else:
             self.error_response(data)
@@ -108,11 +110,11 @@ class GemfireClient:
         data = requests.get(url)
         logging.debug("Sending request to " + url)
         if data.status_code == 200:
-            logging.debug("Response from server: " + " ," .join(data))
+            logging.debug("Response from server: " + " ,".join(data))
             return jsonpickle.decode(data.text)
         else:
             self.error_response(data)
-    
+
     # Run function 
     def execute_function(self, region_name, func_id, value):
         url = self.base_url + "functions/" + str(func_id) + "?onRegion=" + str(region_name)
@@ -121,14 +123,14 @@ class GemfireClient:
         data = requests.post(url, data=jvalue, headers=headers)
         logging.debug("Sending request to " + url)
         if data.status_code == 200:
-            logging.debug("Response from server: " + " ," .join(data))
+            logging.debug("Response from server: " + " ,".join(data))
             return jsonpickle.decode(data.text)
         else:
             self.error_response(data)
 
     # Processes HTTP error responses
-    def error_response(self,data):
-        if data!=400 or data!=409 or data!=405:
+    def error_response(self, data):
+        if data != 400 or data != 409 or data != 405:
             logging.warning("Response from server: " + str(data.status_code) + " " + data.reason + " - " + data.text)
             print str(data.status_code) + ": " + data.reason
             return False
