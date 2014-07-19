@@ -18,7 +18,7 @@ class Region:
         logging.debug("Sending request to " + url)
         fdata = jsonpickle.decode(data.text)
         if data.status_code == 200:
-            logging.debug("Response from server: " + " ," .join(data))
+            logging.debug("Response from server: " + " ,".join(data))
             return fdata[self.name]
         else:
             self.error_response(data)
@@ -56,7 +56,7 @@ class Region:
         logging.debug("Sending request to " + url)
         fdata = jsonpickle.decode(data.text)
         if data.status_code == 200:
-            logging.debug("Response from server: " + " ," .join(data))
+            logging.debug("Response from server: " + " ,".join(data))
             return fdata["keys"]
         else:
             self.error_response(data)
@@ -68,7 +68,7 @@ class Region:
         data = requests.get(url)
         logging.debug("Sending request to " + url)
         if data.status_code == 200:
-            logging.debug("Response from server: " + " ," .join(data))
+            logging.debug("Response from server: " + " ,".join(data))
             return jsonpickle.decode(data.text)
         else:
             self.error_response(data)
@@ -79,7 +79,7 @@ class Region:
         data = requests.get(url)
         logging.debug("Sending request to " + url)
         if data.status_code == 200:
-            logging.debug("Response from server: " + " ," .join(data))
+            logging.debug("Response from server: " + " ,".join(data))
             return jsonpickle.decode(data.text)
         else:
             self.error_response(data)
@@ -115,7 +115,7 @@ class Region:
     def compare_and_set(self, key, oldvalue, newvalue):
         url = self.base_url + "/" + str(key) + "?op=CAS"
         headers = {'content-type': 'application/json'}
-        value = {"@old":oldvalue,"@new":newvalue}
+        value = {"@old": oldvalue, "@new": newvalue}
         jvalue = jsonpickle.encode(value)
         data = requests.put(url, data=jvalue, headers=headers)
         logging.debug("Sending request to " + url)
@@ -148,13 +148,13 @@ class Region:
                 self.error_response(data)
         if self.type == "PARTITION":
             keys = self.keys()
-            temp = ",".join(str(key)for key in keys)
+            temp = ",".join(str(key) for key in keys)
             self.delete(temp)
             return True
 
     # Processes HTTP error responses
-    def error_response(self,data):
-        if data!=400 or data!=409 or data!=405:
+    def error_response(self, data):
+        if data != 400 or data != 409 or data != 405:
             logging.warning("Response from server: " + str(data.status_code) + " " + data.reason + " - " + data.text)
             print str(data.status_code) + ": " + data.reason
             return False
