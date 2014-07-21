@@ -3,7 +3,6 @@ from datetime import datetime
 from Repository import *
 
 
-
 class GemfireClient:
 
     # Initializes the Client Object
