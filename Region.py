@@ -1,6 +1,6 @@
+import logging
 import requests
 import jsonpickle
-import logging
 
 
 class Region:
