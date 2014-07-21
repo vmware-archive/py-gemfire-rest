@@ -1,6 +1,7 @@
-from Repository import *
 import logging
 from datetime import datetime
+from Repository import *
+
 
 
 class GemfireClient:
