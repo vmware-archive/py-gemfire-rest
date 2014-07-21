@@ -1,7 +1,7 @@
-import unittest
-from GemfireClient import *
-from Customer import *
 import os
+import unittest
+from Customer import *
+from GemfireClient import *
 
 
 class SimpleTestCase(unittest.TestCase):
