@@ -4,7 +4,7 @@ from Repository import *
 
 class GemfireClient:
 
-    # Initializes the Client Object
+    ''' Initializes the Client Object '''
     def __init__(self, hostname, port, debug_mode):
         self.hostname = hostname
         self.port = port
@@ -16,7 +16,7 @@ class GemfireClient:
             logging.info('Started Client')
         self.connection()
 
-    # Checks connection to the server
+    ''' Checks connection to the server '''
     def connection(self):
         data = requests.get(self.base_url)
         if data.status_code == 200:
@@ -25,7 +25,7 @@ class GemfireClient:
         else:
             self.error_response(data)
 
-    # Lists all names of Regions present in the server
+    ''' Lists all names of Regions present in the server '''
     def list_all_regions(self):
         data = requests.get(self.base_url)
         logging.debug("Sending request to " + self.base_url)
@@ -38,7 +38,7 @@ class GemfireClient:
         else:
             self.error_response(data)
 
-    # Initializes and returns a Repository Object
+    ''' Initializes and returns a Repository Object '''
     def create_repository(self, name):
         data = requests.get(self.base_url).json()
         logging.debug("Sending request to " + self.base_url)
@@ -54,7 +54,7 @@ class GemfireClient:
             print "Repository " + name + " does not exist in the server"
             return False
 
-    # Lists all stored Queries in the server
+    ''' Lists all stored Queries in the server '''
     def list_all_queries(self):
         data = requests.get(self.base_url + "/queries")
         logging.debug("Sending request to " + self.base_url + "/queries")
@@ -65,7 +65,7 @@ class GemfireClient:
         else:
             self.error_response(data)
 
-    # Runs the Query with specified parameters
+    ''' Runs the Query with specified parameters '''
     def run_query(self, query_id, query_args):
         args = "{" + "'args:'" + " [" + str(query_args) + "]}"
         url = self.base_url + "queries/" + query_id
@@ -79,7 +79,7 @@ class GemfireClient:
         else:
             self.error_response(data)
 
-    # Creates a new Query and adds it to the server
+    ''' Creates a new Query and adds it to the server '''
     def new_query(self, query_id, query_string):
         url = self.base_url + "/queries?id=" + str(query_id) + "&q=" + str(query_string)
         headers = {'content-type': 'application/json'}
@@ -92,7 +92,7 @@ class GemfireClient:
         else:
             self.error_response(data)
 
-    # Runs an adhoc Query
+    ''' Runs an adhoc Query '''
     def adhoc_query(self, query_string):
         url = self.base_url + "queries/adhoc?q=" + str(query_string)
         data = requests.get(url)
@@ -103,7 +103,7 @@ class GemfireClient:
         else:
             self.error_response(data)
 
-    # List all stored function ID's stored on server
+    ''' List all stored function ID's stored on server '''
     def list_all_functions(self):
         url = self.base_url + "functions"
         data = requests.get(url)
@@ -114,7 +114,7 @@ class GemfireClient:
         else:
             self.error_response(data)
 
-    # Run function 
+    ''' Run function '''
     def execute_function(self, region_name, func_id, value):
         url = self.base_url + "functions/" + str(func_id) + "?onRegion=" + str(region_name)
         headers = {'content-type': 'application/json'}
@@ -127,7 +127,7 @@ class GemfireClient:
         else:
             self.error_response(data)
 
-    # Processes HTTP error responses
+    ''' Processes HTTP error responses '''
     def error_response(self, data):
         if data != 400 or data != 409 or data != 405:
             logging.warning("Response from server: " + str(data.status_code) + " " + data.reason + " - " + data.text)
