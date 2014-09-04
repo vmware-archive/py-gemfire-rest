@@ -5,13 +5,13 @@ import jsonpickle
 
 class Region:
 
-    # Initializes a Region Object
+    ''' Initializes a Region Object '''
     def __init__(self, name, base_url, type):
         self.name = name
         self.base_url = base_url
         self.type = type
 
-    # Returns all the data in a Region
+    ''' Returns all the data in a Region '''
     def get_all(self):
         url = self.base_url + "?ALL"
         data = requests.get(url)
@@ -23,7 +23,7 @@ class Region:
         else:
             self.error_response(data)
 
-    # Creates a new data value in the Region if the key is absent
+    ''' Creates a new data value in the Region if the key is absent '''
     def create(self, key, value):
         url = self.base_url + "?key=" + str(key)
         headers = {'content-type': 'application/json'}
@@ -36,7 +36,7 @@ class Region:
         else:
             self.error_response(data)
 
-    # Updates or inserts data for a specified key
+    ''' Updates or inserts data for a specified key '''
     def put(self, key, value):
         url = self.base_url + "/" + str(key)
         headers = {'content-type': 'application/json'}
@@ -49,7 +49,7 @@ class Region:
         else:
             self.error_response(data)
 
-    # Returns all keys in the Region
+    ''' Returns all keys in the Region '''
     def keys(self):
         url = self.base_url + "/keys"
         data = requests.get(url)
@@ -61,7 +61,7 @@ class Region:
         else:
             self.error_response(data)
 
-    # Returns the data value for a specified key
+    ''' Returns the data value for a specified key '''
     def get(self, *arg):
         sub_url = ','.join(str(key) for key in arg)
         url = self.base_url + "/" + sub_url + "?ignoreMissingKey=true"
@@ -73,7 +73,7 @@ class Region:
         else:
             self.error_response(data)
 
-    # Method to support region[key] notion
+    ''' Method to support region[key] notion '''
     def __getitem__(self, key):
         url = self.base_url + "/" + str(key) + "?ignoreMissingKey=true"
         data = requests.get(url)
@@ -84,7 +84,7 @@ class Region:
         else:
             self.error_response(data)
 
-    # Insert or updates data for a multiple keys specified by a hashtable
+    ''' Insert or updates data for a multiple keys specified by a hashtable '''
     def put_all(self, item):
         sub_url = ','.join(str(keys) for keys in item)
         url = self.base_url + "/" + sub_url
@@ -98,7 +98,7 @@ class Region:
         else:
             self.error_response(data)
 
-    # Updates the data in a region only if the specified key is present
+    ''' Updates the data in a region only if the specified key is present '''
     def update(self, key, value):
         url = self.base_url + "/" + str(key) + "?op=REPLACE"
         headers = {'content-type': 'application/json'}
@@ -111,7 +111,7 @@ class Region:
         else:
             self.error_response(data)
 
-    # Compares old values and if identical replaces with a new value
+    ''' Compares old values and if identical replaces with a new value '''
     def compare_and_set(self, key, oldvalue, newvalue):
         url = self.base_url + "/" + str(key) + "?op=CAS"
         headers = {'content-type': 'application/json'}
@@ -125,7 +125,7 @@ class Region:
         else:
             self.error_response(data)
 
-    # Deletes the corresponding data value for the specified key
+    ''' Deletes the corresponding data value for the specified key '''
     def delete(self, *arg):
         sub_url = ','.join(str(key) for key in arg)
         url = self.base_url + "/" + sub_url
@@ -137,7 +137,7 @@ class Region:
         else:
             self.error_response(data)
 
-    # Deletes all data in the Region
+    ''' Deletes all data in the Region '''
     def clear(self):
         if self.type == "REPLICATE":
             data = requests.delete(self.base_url)
@@ -152,7 +152,7 @@ class Region:
             self.delete(temp)
             return True
 
-    # Processes HTTP error responses
+    ''' Processes HTTP error responses '''
     def error_response(self, data):
         if data != 400 or data != 409 or data != 405:
             logging.warning("Response from server: " + str(data.status_code) + " " + data.reason + " - " + data.text)
