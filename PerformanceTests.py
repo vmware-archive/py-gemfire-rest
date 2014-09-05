@@ -7,7 +7,6 @@ is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND
 See the License for the specific language governing permissions and limitations under the License.'''
 
 
-
 from GemfireClient import *
 import time
 from Customer import *
