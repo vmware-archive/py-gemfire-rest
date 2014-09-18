@@ -20,7 +20,7 @@ class GemfireClient:
     for instructions on setting up GemFire's REST service.
     '''
 
-    def __init__(self, hostname, port, debug_mode):
+    def __init__(self, hostname, port, debug_mode=False):
         '''Initializes the Client with the given hostname and port'''
         self.hostname = hostname
         self.port = port
