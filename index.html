@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Py-gemfire-rest : Python client for Gemfire&#39;s REST service.">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Py-gemfire-rest</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/gemfire/py-gemfire-rest">View on GitHub</a>
+
+          <h1 id="project_title">Py-gemfire-rest</h1>
+          <h2 id="project_tagline">Python client for Gemfire&#39;s REST service.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/gemfire/py-gemfire-rest/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/gemfire/py-gemfire-rest/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="py-gemfire-rest" class="anchor" href="#py-gemfire-rest"><span class="octicon octicon-link"></span></a>py-gemfire-rest</h1>
+
+<h1></h1>
+
+<p>This library enables your python applications to use GemFire as a datastore. (GemFire is a distributed key-value store. A short tutorial can be found at <a href="http://goo.gl/rF93fn">http://goo.gl/rF93fn</a>). This library exposes Spring's CrudRepository like methods in an effort to simplify GemFire's APIs while still giving access to advanced GemFire features (details below). </p>
+
+<h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<hr><p>Using pip installation is simple</p>
+
+<pre><code>$ sudo pip install gemfire-rest
+</code></pre>
+
+<p>or from source:</p>
+
+<pre><code>$ sudo python setup.py install
+</code></pre>
+
+<h2>
+<a name="quick-start" class="anchor" href="#quick-start"><span class="octicon octicon-link"></span></a>Quick Start</h2>
+
+<hr><ol>
+<li>Start the GemFire REST service by <a href="http://gemfire.docs.pivotal.io/latest/userguide/index.html#gemfire_rest/setup_config.html">following the instructions</a>
+</li>
+<li>Create a Region on the server (Region is a distributed ConcurrentMap in which GemFire stores the data). </li>
+</ol><pre><code>    gfsh&gt;create region --name=orders --type=PARTITION
+</code></pre>
+
+<ol><li>
+</li></ol><div class="highlight highlight-python"><pre>    <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">gemfire.GemfireClient</span> <span class="kn">import</span> <span class="o">*</span>
+    <span class="o">&gt;&gt;&gt;</span> <span class="n">client</span> <span class="o">=</span> <span class="n">GemfireClient</span><span class="p">(</span><span class="n">hostname</span><span class="o">=</span><span class="s">"localhost"</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">8080</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span> <span class="n">myRepo</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">create_repository</span><span class="p">(</span><span class="s">"orders"</span><span class="p">)</span>
+    <span class="o">&gt;&gt;&gt;</span> <span class="n">myRepo</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+</pre></div>
+
+<p>where the order object has an "id" instance variable. The library handles converting the object to/from json. </p>
+
+<h2>
+<a name="api-reference" class="anchor" href="#api-reference"><span class="octicon octicon-link"></span></a>API Reference</h2>
+
+<hr><p>This library exercises <a href="http://gemfire.docs.pivotal.io/latest/userguide/index.html#gemfire_rest/book_intro.html">GemFire's REST APIs</a> for enabling your python application to use GemFire as its datastore. To get started, we create a client by providing a hostname and port for an already running endpoint. </p>
+
+<div class="highlight highlight-python"><pre>    <span class="n">client</span> <span class="o">=</span> <span class="n">GemfireClient</span><span class="p">(</span><span class="n">hostname</span><span class="o">=</span><span class="s">"localhost"</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">8080</span><span class="p">)</span>
+</pre></div>
+
+<p>For each type of Object that we want to store in GemFire, we create a repository (Please not that you will have to create a Region on the server with the same name as the repository).</p>
+
+<div class="highlight highlight-python"><pre>    <span class="n">orders</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">create_repository</span><span class="p">(</span><span class="s">"orders"</span><span class="p">)</span>
+</pre></div>
+
+<p>The client provides a method to look up all the Regions that have been created on the server already:</p>
+
+<div class="highlight highlight-python"><pre>    <span class="n">client</span><span class="o">.</span><span class="n">list_all_regions</span><span class="p">()</span>
+</pre></div>
+
+<p>GemfireClient also has methods for querying and function execution which we will see later.</p>
+
+<h3>
+<a name="repository" class="anchor" href="#repository"><span class="octicon octicon-link"></span></a>Repository</h3>
+
+<hr><p>Just like Spring's CrudRepository interface, the following methods are available on the Repository</p>
+
+<div class="highlight highlight-python"><pre>    <span class="n">save</span><span class="p">(</span><span class="n">entities</span><span class="p">)</span>   <span class="c">#saves one or more entities in GemFire</span>
+    <span class="n">find</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>        <span class="c">#finds entities with the given ids</span>
+    <span class="n">find_all</span><span class="p">()</span>       <span class="c">#returns all data in region</span>
+    <span class="n">exists</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>       <span class="c">#checks to see if an entity with the given id exists</span>
+    <span class="n">delete</span><span class="p">(</span><span class="n">entities</span><span class="p">)</span> <span class="c">#deletes the given entities from GemFire</span>
+    <span class="n">delete_all</span><span class="p">()</span>     <span class="c">#deletes all data in the GemFire region</span>
+</pre></div>
+
+<p>As the naming suggests, intention of these methods is pretty clear. One thing that needs to be highlighted here is that all entities need an identity; this library uses "id" instance variable as identity. So all entities that are stored in GemFire need to have an instance variable named "id".</p>
+
+<h3>
+<a name="region" class="anchor" href="#region"><span class="octicon octicon-link"></span></a>Region</h3>
+
+<hr><p>For advanced operations, we also provide access to Region, which defines the following methods:</p>
+
+<div class="highlight highlight-python"><pre>    <span class="n">create</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>  <span class="c">#will insert only if key does not exists</span>
+    <span class="n">update</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>  <span class="c">#will update only if the key exists</span>
+    <span class="n">keys</span><span class="p">()</span>              <span class="c"># returns all keys in the region</span>
+    <span class="n">compare_and_set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">oldvalue</span><span class="p">,</span> <span class="n">newvalue</span><span class="p">)</span> <span class="c">#sets the key to </span>
+            <span class="c">#newvalue only if current value is equal ot oldvalue</span>
+</pre></div>
+
+<h3>
+<a name="querying" class="anchor" href="#querying"><span class="octicon octicon-link"></span></a>Querying</h3>
+
+<hr><p>GemfireClient provides API for running ad-hoc <a href="http://gemfire.docs.pivotal.io/latest/userguide/index.html#developing/querying_basics/chapter_overview.html">OQL queries</a> on the server.</p>
+
+<div class="highlight highlight-python"><pre>    <span class="n">adhoc_query</span><span class="p">(</span><span class="n">query_string</span><span class="p">)</span>  <span class="c">#OQL query string</span>
+</pre></div>
+
+<p>For faster performance, you will want to run prepared OQL queries. GemfireClient provides the following APIs for this:</p>
+
+<div class="highlight highlight-python"><pre>    <span class="c">#registers and prepares the OQL query on the server</span>
+    <span class="n">new_query</span><span class="p">(</span><span class="n">query_id</span><span class="p">,</span> <span class="n">query_string</span><span class="p">)</span> 
+    <span class="c">#runs the query with specified parameters </span>
+    <span class="n">run_query</span><span class="p">(</span><span class="n">query_id</span><span class="p">,</span> <span class="n">query_args</span><span class="p">)</span>   
+</pre></div>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Py-gemfire-rest maintained by <a href="https://github.com/gemfire">gemfire</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
