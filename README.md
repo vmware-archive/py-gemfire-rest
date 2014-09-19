@@ -7,21 +7,21 @@ This library enables your python applications to use GemFire as a datastore. (Ge
 ---------------
 
 Using pip installation is simple
-
+```
     $ sudo pip install gemfire-rest
-
+```
 or from source:
-
+```
     $ sudo python setup.py install
-
+```
 ## Quick Start
 --------------
 
 1. Start the GemFire REST service by [following the instructions](http://gemfire.docs.pivotal.io/latest/userguide/index.html#gemfire_rest/setup_config.html)
 2. Create a Region on the server (Region is a distributed ConcurrentMap in which GemFire stores the data). 
-
+```
     gfsh>create region --name=orders --type=PARTITION
-
+```
 3. 
 ```python
     >>> from gemfire.GemfireClient import *
@@ -89,4 +89,3 @@ For faster performance, you will want to run prepared OQL queries. GemfireClient
     new_query(query_id, query_string) #registers and prepares the OQL query on the server
     run_query(query_id, query_args)   #runs the query with specified parameters 
 ```
-
