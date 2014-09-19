@@ -12,9 +12,9 @@ from distutils.core import setup
 
 setup(
     name='gemfire-rest',
-    version='1.0.2',
+    version='1.0.3',
     description='Python client for GemFire\'s REST service ',
-    long_description=open('README.txt').read(),
+    long_description=open('README.md').read(),
     url='https://github.com/gemfire/py-gemfire-rest',
     packages=['gemfire',],
     license='Apache 2.0',
