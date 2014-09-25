@@ -36,102 +36,125 @@
 
 <h1></h1>
 
-<p>This library enables your python applications to use GemFire as a datastore. (GemFire is a distributed key-value store. A short tutorial can be found at <a href="http://goo.gl/rF93fn">http://goo.gl/rF93fn</a>). This library exposes Spring's CrudRepository like methods in an effort to simplify GemFire's APIs while still giving access to advanced GemFire features (details below). </p>
+<p>For a quick getting started guide please see README for the project at <a href="https://github.com/gemfire/py-gemfire-rest">https://github.com/gemfire/py-gemfire-rest</a></p>
 
-<h2>
-<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+<p>With the 8.0 release, GemFire now supports a RESTful API enabling any programming language to be used for writing highly scalable applications. We have also released an open-source implementation of a python package (<a href="https://github.com/gemfire/py-gemfire-rest">https://github.com/gemfire/py-gemfire-rest</a>) that utilizes GemFire’s REST API.
+With this package:</p>
 
-<hr><p>Using pip installation is simple</p>
+<ul>
+<li>Your application can define the data models entirely in python. (We require that you add “id” instance variable)</li>
+<li>Use Spring’s CrudRepository like interface to store/access your data.</li>
+</ul><p>Say, you want to create a simple social networking application in which you store user profiles and the posts they make. This means your two classes could be defined as:</p>
 
-<pre><code>$ sudo pip install gemfire-rest
+<pre><code>class Profile:
+    def __init__(self, id, name, friends=None):
+        self.id = id
+        self.name = name
+        self.friends = friends
+
+class Posts:
+    def __init__(self, id, author, status, timestamp=time.clock()):
+        self.id = id
+        self.author = author
+        self.status = status
+        self.timestamp = timestamp
 </code></pre>
 
-<p>or from source:</p>
+<h1>
+<a name="starting-the-gemfire-data-grid" class="anchor" href="#starting-the-gemfire-data-grid"><span class="octicon octicon-link"></span></a>Starting the GemFire data grid</h1>
 
-<pre><code>$ sudo python setup.py install
+<p>Please <a href="http://gemfire.docs.pivotal.io/latest/userguide/index.html#getting_started/install_intro.html">install GemFire for your operating system</a>. Now, let us start a GemFire cluster to store your data; GemFire cluster is made up of two types of members, “locators” and “servers”. A locator is a service that enables GemFire servers to discover each other, facilitates load balancing etc. From GemFireSHell (gfsh) start a locator as follows: (For high availability, you should start more than one locator per cluster)</p>
+
+<pre><code>gfsh&gt;start locator --name=locator1
 </code></pre>
 
-<h2>
-<a name="quick-start" class="anchor" href="#quick-start"><span class="octicon octicon-link"></span></a>Quick Start</h2>
+<p>A GemFire “server” is a process which manages your data. All nodes talk to one another. A server can be stated as follows</p>
 
-<hr><ol>
-<li>Start the GemFire REST service by <a href="http://gemfire.docs.pivotal.io/latest/userguide/index.html#gemfire_rest/setup_config.html">following the instructions</a>
-</li>
-<li>Create a Region on the server (Region is a distributed ConcurrentMap in which GemFire stores the data). </li>
-</ol><pre><code>    gfsh&gt;create region --name=orders --type=PARTITION
+<pre><code>gfsh&gt;start server --name=server1
 </code></pre>
 
-<ol><li>
-</li></ol><div class="highlight highlight-python"><pre>    <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">gemfire.GemfireClient</span> <span class="kn">import</span> <span class="o">*</span>
-    <span class="o">&gt;&gt;&gt;</span> <span class="n">client</span> <span class="o">=</span> <span class="n">GemfireClient</span><span class="p">(</span><span class="n">hostname</span><span class="o">=</span><span class="s">"localhost"</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">8080</span><span class="p">)</span>
-    <span class="o">&gt;&gt;&gt;</span> <span class="n">myRepo</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">create_repository</span><span class="p">(</span><span class="s">"orders"</span><span class="p">)</span>
-    <span class="o">&gt;&gt;&gt;</span> <span class="n">myRepo</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
-</pre></div>
+<p>A server with a REST endpoint can be stated as follows</p>
 
-<p>where the order object has an "id" instance variable. The library handles converting the object to/from json. </p>
+<pre><code>gfsh&gt;start server --name=server2 --J=-Dgemfire.start-dev-rest-api=true --J=-Dgemfire.http-service-port=8080
+</code></pre>
 
-<h2>
-<a name="api-reference" class="anchor" href="#api-reference"><span class="octicon octicon-link"></span></a>API Reference</h2>
+<p>Let us create Regions (RDBMS equivalent of Tables) to stores this data</p>
 
-<hr><p>This library exercises <a href="http://gemfire.docs.pivotal.io/latest/userguide/index.html#gemfire_rest/book_intro.html">GemFire's REST APIs</a> for enabling your python application to use GemFire as its datastore. To get started, we create a client by providing a hostname and port for an already running endpoint. </p>
+<pre><code>gfsh&gt;create region --name=profiles --type=REPLICATE
+</code></pre>
 
-<div class="highlight highlight-python"><pre>    <span class="n">client</span> <span class="o">=</span> <span class="n">GemfireClient</span><span class="p">(</span><span class="n">hostname</span><span class="o">=</span><span class="s">"localhost"</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">8080</span><span class="p">)</span>
-</pre></div>
+<p>A replicate region maintains a copy of the entire data on each server</p>
 
-<p>For each type of Object that we want to store in GemFire, we create a repository (Please not that you will have to create a Region on the server with the same name as the repository).</p>
+<pre><code>gfsh&gt;create region --name=posts --type=PARTITION
+</code></pre>
 
-<div class="highlight highlight-python"><pre>    <span class="n">orders</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">create_repository</span><span class="p">(</span><span class="s">"orders"</span><span class="p">)</span>
-</pre></div>
+<p>A partitioned region splits its contents among all servers</p>
 
-<p>The client provides a method to look up all the Regions that have been created on the server already:</p>
+<h1>
+<a name="writing-python-application" class="anchor" href="#writing-python-application"><span class="octicon octicon-link"></span></a>Writing Python Application</h1>
 
-<div class="highlight highlight-python"><pre>    <span class="n">client</span><span class="o">.</span><span class="n">list_all_regions</span><span class="p">()</span>
-</pre></div>
+<p>Now that we have the GemFire RESTful service started, we can create our client instance and store data:</p>
 
-<p>GemfireClient also has methods for querying and function execution which we will see later.</p>
+<pre><code>#create client using hostname and port of GemFire’s REST service endpoint
+client = GemfireClient(hostname="localhost", port=8080)
 
-<h3>
-<a name="repository" class="anchor" href="#repository"><span class="octicon octicon-link"></span></a>Repository</h3>
+#create a repository for storing profiles
+profiles = client.create_repository(“profiles”)
 
-<hr><p>Just like Spring's CrudRepository interface, the following methods are available on the Repository</p>
+#save profiles in GemFire
+user1 = Profile(1, “Ethan”)
+profiles.save(user1)
 
-<div class="highlight highlight-python"><pre>    <span class="n">save</span><span class="p">(</span><span class="n">entities</span><span class="p">)</span>   <span class="c">#saves one or more entities in GemFire</span>
-    <span class="n">find</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>        <span class="c">#finds entities with the given ids</span>
-    <span class="n">find_all</span><span class="p">()</span>       <span class="c">#returns all data in region</span>
-    <span class="n">exists</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>       <span class="c">#checks to see if an entity with the given id exists</span>
-    <span class="n">delete</span><span class="p">(</span><span class="n">entities</span><span class="p">)</span> <span class="c">#deletes the given entities from GemFire</span>
-    <span class="n">delete_all</span><span class="p">()</span>     <span class="c">#deletes all data in the GemFire region</span>
-</pre></div>
+#you can also pass a list of entities, efficient for bulk loading
+post1 = Post(1, "Ethan", "Eating Toast!")
+post2 = Post(2, "Isabella", "Drinking Coffee")
+posts = client.create_repository("posts")
+posts.save([post1, post2])
 
-<p>As the naming suggests, intention of these methods is pretty clear. One thing that needs to be highlighted here is that all entities need an identity; this library uses "id" instance variable as identity. So all entities that are stored in GemFire need to have an instance variable named "id".</p>
+# find an existing profile
+user2 = profiles.find(1)
+</code></pre>
 
-<h3>
-<a name="region" class="anchor" href="#region"><span class="octicon octicon-link"></span></a>Region</h3>
+<p>A complete list of methods for GemfireClient and the Repository modules:</p>
 
-<hr><p>For advanced operations, we also provide access to Region, which defines the following methods:</p>
+<p>For specialized operations on the Region like compare and set, putIfAbsent etc. you can obtain the Region directly from the repository:
+profile_region = profiles.get_region()
+A complete list of Region methods is:</p>
 
-<div class="highlight highlight-python"><pre>    <span class="n">create</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>  <span class="c">#will insert only if key does not exists</span>
-    <span class="n">update</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>  <span class="c">#will update only if the key exists</span>
-    <span class="n">keys</span><span class="p">()</span>              <span class="c"># returns all keys in the region</span>
-    <span class="n">compare_and_set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">oldvalue</span><span class="p">,</span> <span class="n">newvalue</span><span class="p">)</span> <span class="c">#sets the key to </span>
-            <span class="c">#newvalue only if current value is equal ot oldvalue</span>
-</pre></div>
+<h1>
+<a name="query" class="anchor" href="#query"><span class="octicon octicon-link"></span></a>Query</h1>
 
-<h3>
-<a name="querying" class="anchor" href="#querying"><span class="octicon octicon-link"></span></a>Querying</h3>
+<p>GemFire supports OQL queries. For an example, let us say we want to get all posts by Ethan. We can write an ad-hoc query as follows:</p>
 
-<hr><p>GemfireClient provides API for running ad-hoc <a href="http://gemfire.docs.pivotal.io/latest/userguide/index.html#developing/querying_basics/chapter_overview.html">OQL queries</a> on the server.</p>
+<pre><code>result = client.adhoc_query("select * from /posts where author='Ethan' ")
+    for p in result:
+        print p.status
+</code></pre>
 
-<div class="highlight highlight-python"><pre>    <span class="n">adhoc_query</span><span class="p">(</span><span class="n">query_string</span><span class="p">)</span>  <span class="c">#OQL query string</span>
-</pre></div>
+<p>When we want to use the above query for a different author, we can create a prepared query by passing an identifier for the prepared query along with the actual query string. We can use the identifier to run a prepared query at a later point. In the below example, we create a prepared query identified by “all_posts” and later use that identifier to run the query by passing in the parameters.</p>
 
-<p>For faster performance, you will want to run prepared OQL queries. GemfireClient provides the following APIs for this:</p>
+<pre><code>    client.new_query("all_posts", "select * from /posts where author=$1")
+    result = client.run_query("all_posts", "Ethan")
+    for p in result:
+        print p.status
+</code></pre>
 
-<div class="highlight highlight-python"><pre>    <span class="c">#registers and prepares the OQL query on the server</span>
-    <span class="n">new_query</span><span class="p">(</span><span class="n">query_id</span><span class="p">,</span> <span class="n">query_string</span><span class="p">)</span> 
-    <span class="c">#runs the query with specified parameters </span>
-    <span class="n">run_query</span><span class="p">(</span><span class="n">query_id</span><span class="p">,</span> <span class="n">query_args</span><span class="p">)</span>   
-</pre></div>
+<h1>
+<a name="accessing-data-from-other-languages" class="anchor" href="#accessing-data-from-other-languages"><span class="octicon octicon-link"></span></a>Accessing data from Other Languages</h1>
+
+<p>GemFire internally saves this data in its Portable Data eXchange format (PDX), so it is possible to access and modify the data inserted from python in other languages. The following code snippet demonstrates how this can be done from GemFire’s Java client:</p>
+
+<pre><code>ClientCacheFactory cf = new ClientCacheFactory();
+        cf.addPoolLocator(“localhost”, 10334);
+        ClientCache cache = cf.create();
+        ClientRegionFactory&lt;Integer, Profile&gt; rf = cache.createClientRegionFactory(ClientRegionShortcut.PROXY);
+        Region profiles = rf.create("profiles");
+        PdxInstance user1 = (PdxInstance) profiles.get("1");
+        System.out.println("get returned:"+user1.getField("name")); //prints Ethan
+        WritablePdxInstance userModified = user1.createWriter();
+        userModified.setField("name", "Ethan Jr");
+        profiles.put("1", userModified);
+</code></pre>
       </section>
     </div>
 
