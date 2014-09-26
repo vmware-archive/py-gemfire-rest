@@ -100,10 +100,10 @@ With this package:</p>
 <p><a href="#gemfireclient-api">All methods on GemfireClient</a>. From this client we can create repositories for storing our entities</p>
 
 <div class="highlight highlight-python"><pre><span class="c">#create a repository for storing profiles</span>
-<span class="n">profiles</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">create_repository</span><span class="p">(</span><span class="err">“</span><span class="n">profiles</span><span class="err">”</span><span class="p">)</span>
+<span class="n">profiles</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">create_repository</span><span class="p">(</span><span class="s">"profiles"</span><span class="p">)</span>
 
 <span class="c">#save profiles in GemFire</span>
-<span class="n">user1</span> <span class="o">=</span> <span class="n">Profile</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="err">“</span><span class="n">Ethan</span><span class="err">”</span><span class="p">)</span>
+<span class="n">user1</span> <span class="o">=</span> <span class="n">Profile</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">"Ethan"</span><span class="p">)</span>
 <span class="n">profiles</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">user1</span><span class="p">)</span>
 
 <span class="c">#you can also pass a list of entities, efficient for bulk loading</span>
@@ -153,7 +153,7 @@ With this package:</p>
 
 <div class="highlight highlight-java"><pre><span class="c1">//create a client-cache to access server data</span>
 <span class="n">ClientCacheFactory</span> <span class="n">cf</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">ClientCacheFactory</span><span class="o">();</span>
-<span class="n">cf</span><span class="o">.</span><span class="na">addPoolLocator</span><span class="o">(</span><span class="err">“</span><span class="n">localhost</span><span class="err">”</span><span class="o">,</span> <span class="mi">10334</span><span class="o">);</span>
+<span class="n">cf</span><span class="o">.</span><span class="na">addPoolLocator</span><span class="o">(</span><span class="s">"localhost"</span><span class="o">,</span> <span class="mi">10334</span><span class="o">);</span>
 <span class="n">ClientCache</span> <span class="n">cache</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="na">create</span><span class="o">();</span>
 
 <span class="c1">//create a reference to the region on the client</span>
@@ -176,112 +176,115 @@ With this package:</p>
 <hr><p>A complete list of methods for GemfireClient, Repository and Region modules:</p>
 
 <h2>
-<a name="gemfireclient-" class="anchor" href="#gemfireclient-"><span class="octicon octicon-link"></span></a>GemfireClient </h2>
+<a name="gemfireclient-" class="anchor" href="#gemfireclient-"><span class="octicon octicon-link"></span></a>GemfireClient <a name="gemfireclient-api"></a>
+</h2>
 
 <hr><div class="highlight highlight-python"><pre><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hostname</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">debug_mode</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-      <span class="n">Initializes</span> <span class="n">the</span> <span class="n">Client</span> <span class="k">with</span> <span class="n">the</span> <span class="n">given</span> <span class="n">hostname</span> <span class="ow">and</span> <span class="n">port</span>
+      <span class="c">#Initializes the Client with the given hostname and port</span>
 
 <span class="n">adhoc_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_string</span><span class="p">)</span>
-      <span class="n">Runs</span> <span class="n">an</span> <span class="n">adhoc</span> <span class="n">Query</span>
+      <span class="c">#Runs an adhoc Query</span>
 
 <span class="n">connection</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-      <span class="n">Checks</span> <span class="n">connection</span> <span class="n">to</span> <span class="n">the</span> <span class="n">server</span>
+      <span class="c">#Checks connection to the server</span>
 
 <span class="n">create_repository</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-      <span class="n">Initializes</span> <span class="ow">and</span> <span class="n">returns</span> <span class="n">a</span> <span class="n">Repository</span> <span class="n">Object</span>
+      <span class="c">#Initializes and returns a Repository Object</span>
 
 <span class="n">error_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
-      <span class="n">Processes</span> <span class="n">HTTP</span> <span class="n">error</span> <span class="n">responses</span>
+      <span class="c">#Processes HTTP error responses</span>
 
 <span class="n">execute_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region_name</span><span class="p">,</span> <span class="n">func_id</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-      <span class="n">Run</span> <span class="n">function</span>
+      <span class="c">#Run function</span>
 
 <span class="n">list_all_functions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-      <span class="n">List</span> <span class="nb">all</span> <span class="n">stored</span> <span class="n">function</span> <span class="n">ID</span><span class="s">'s stored on server</span>
+      <span class="c">#List all stored function ID's stored on server</span>
 
 <span class="n">list_all_queries</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-      <span class="n">Lists</span> <span class="nb">all</span> <span class="n">stored</span> <span class="n">Queries</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">server</span>
+      <span class="c">#Lists all stored Queries in the server</span>
 
 <span class="n">list_all_regions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-      <span class="n">Lists</span> <span class="nb">all</span> <span class="n">names</span> <span class="n">of</span> <span class="n">Regions</span> <span class="n">present</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">server</span>
+      <span class="c">#Lists all names of Regions present in the server</span>
 
 <span class="n">new_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_id</span><span class="p">,</span> <span class="n">query_string</span><span class="p">)</span>
-      <span class="n">Creates</span> <span class="n">a</span> <span class="n">new</span> <span class="n">Query</span> <span class="ow">and</span> <span class="n">adds</span> <span class="n">it</span> <span class="n">to</span> <span class="n">the</span> <span class="n">server</span>
+      <span class="c">#Creates a new Query and adds it to the server</span>
 
 <span class="n">run_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_id</span><span class="p">,</span> <span class="n">query_args</span><span class="p">)</span>
-      <span class="n">Runs</span> <span class="n">the</span> <span class="n">Query</span> <span class="k">with</span> <span class="n">specified</span> <span class="n">parameters</span>
+      <span class="c">#Runs the Query with specified parameters</span>
 </pre></div>
 
 <h2>
-<a name="repository-" class="anchor" href="#repository-"><span class="octicon octicon-link"></span></a>Repository </h2>
+<a name="repository-" class="anchor" href="#repository-"><span class="octicon octicon-link"></span></a>Repository <a name="repository-api"></a>
+</h2>
 
 <hr><div class="highlight highlight-python"><pre><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">base_url</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span>
-      <span class="n">Initializes</span> <span class="n">a</span> <span class="n">Repository</span>
+      <span class="c">#Initializes a Repository</span>
 
 <span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entities</span><span class="p">)</span>
-      <span class="n">Deletes</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">Object</span> <span class="kn">from</span> <span class="nn">the</span> <span class="nn">region</span>
+      <span class="c">#Deletes the specified Object from the region</span>
 
 <span class="n">delete_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-      <span class="n">Deletes</span> <span class="nb">all</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">region</span>
+      <span class="c">#Deletes all data in the region</span>
 
 <span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
-      <span class="n">Checks</span> <span class="n">whether</span> <span class="n">an</span> <span class="n">Object</span> <span class="k">with</span> <span class="n">the</span> <span class="n">given</span> <span class="nb">id</span> <span class="n">exists</span>
+      <span class="c">#Checks whether an Object with the given id exists</span>
 
 <span class="n">find</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">)</span>
-      <span class="n">Retrieves</span> <span class="n">Object</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="n">by</span> <span class="n">the</span> <span class="n">given</span> <span class="n">ID</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">the</span> <span class="nn">region</span>
+      <span class="c">#Retrieves Object(s) by the given ID(s) from the region</span>
 
 <span class="n">find_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-      <span class="n">Returns</span> <span class="nb">all</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">region</span>
+      <span class="c">#Returns all data in the region</span>
 
 <span class="n">get_region</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-      <span class="n">Instantiates</span> <span class="ow">and</span> <span class="n">returns</span> <span class="n">a</span> <span class="n">Region</span> <span class="nb">object</span>
+      <span class="c">#Instantiates and returns a Region object</span>
 
 <span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entities</span><span class="p">)</span>
-      <span class="n">Saves</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="nb">all</span> <span class="n">given</span> <span class="n">Objects</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">region</span>
+      <span class="c">#Saves(s) all given Objects in the region</span>
 
 </pre></div>
 
 <h2>
-<a name="region-" class="anchor" href="#region-"><span class="octicon octicon-link"></span></a>Region </h2>
+<a name="region-" class="anchor" href="#region-"><span class="octicon octicon-link"></span></a>Region <a name="region-api"></a>
+</h2>
 
 <div class="highlight highlight-python"><pre><span class="n">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
-      <span class="n">Method</span> <span class="n">to</span> <span class="n">support</span> <span class="n">region</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="n">notion</span>
+      <span class="c">#Method to support region[key] notion</span>
 
 <span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">base_url</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span>
-      <span class="n">Initializes</span> <span class="n">a</span> <span class="n">Region</span>
+      <span class="c">#Initializes a Region</span>
 
 <span class="n">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-      <span class="n">Deletes</span> <span class="nb">all</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">Region</span>
+      <span class="c">#Deletes all data in the Region</span>
 
 <span class="n">compare_and_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">oldvalue</span><span class="p">,</span> <span class="n">newvalue</span><span class="p">)</span>
-      <span class="n">Compares</span> <span class="n">old</span> <span class="n">values</span> <span class="ow">and</span> <span class="k">if</span> <span class="n">identical</span> <span class="n">replaces</span> <span class="k">with</span> <span class="n">a</span> <span class="n">new</span> <span class="n">value</span>
+      <span class="c">#Compares old values and if identical replaces with a new value</span>
 
 <span class="n">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-      <span class="n">Creates</span> <span class="n">a</span> <span class="n">new</span> <span class="n">data</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">Region</span> <span class="k">if</span> <span class="n">the</span> <span class="n">key</span> <span class="ow">is</span> <span class="n">absent</span>
+      <span class="c">#Creates a new data value in the Region if the key is absent</span>
 
 <span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
-      <span class="n">Deletes</span> <span class="n">the</span> <span class="n">corresponding</span> <span class="n">data</span> <span class="n">value</span> <span class="k">for</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">key</span>
+      <span class="c">#Deletes the corresponding data value for the specified key</span>
 
 <span class="n">error_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
-      <span class="n">Processes</span> <span class="n">HTTP</span> <span class="n">error</span> <span class="n">responses</span>
+      <span class="c">#Processes HTTP error responses</span>
 
 <span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
-      <span class="n">Returns</span> <span class="n">the</span> <span class="n">data</span> <span class="n">value</span> <span class="k">for</span> <span class="n">a</span> <span class="n">specified</span> <span class="n">key</span>
+      <span class="c">#Returns the data value for a specified key</span>
 
 <span class="n">get_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-      <span class="n">Returns</span> <span class="nb">all</span> <span class="n">the</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">a</span> <span class="n">Region</span>
+      <span class="c">#Returns all the data in a Region</span>
 
 <span class="n">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-      <span class="n">Returns</span> <span class="nb">all</span> <span class="n">keys</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">Region</span>
+      <span class="c">#Returns all keys in the Region</span>
 
 <span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-      <span class="n">Updates</span> <span class="ow">or</span> <span class="n">inserts</span> <span class="n">data</span> <span class="k">for</span> <span class="n">a</span> <span class="n">specified</span> <span class="n">key</span>
+      <span class="c">#Updates or inserts data for a specified key</span>
 
 <span class="n">put_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
-      <span class="n">Insert</span> <span class="ow">or</span> <span class="n">updates</span> <span class="n">data</span> <span class="k">for</span> <span class="n">multiple</span> <span class="n">keys</span> <span class="n">specified</span> <span class="n">by</span> <span class="n">a</span> <span class="n">hashtable</span>
+      <span class="c">#Insert or updates data for multiple keys specified by a hashtable</span>
 
 <span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-      <span class="n">Updates</span> <span class="n">the</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">a</span> <span class="n">region</span> <span class="n">only</span> <span class="k">if</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">key</span> <span class="ow">is</span> <span class="n">present</span>
+      <span class="c">#Updates the data in a region only if the specified key is present</span>
 
 </pre></div>
       </section>
