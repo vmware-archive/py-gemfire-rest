@@ -32,9 +32,7 @@
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
         <h1>
-<a name="py-gemfire-rest" class="anchor" href="#py-gemfire-rest"><span class="octicon octicon-link"></span></a>py-gemfire-rest</h1>
-
-<h1></h1>
+<a name="python-client-for-gemfire" class="anchor" href="#python-client-for-gemfire"><span class="octicon octicon-link"></span></a>Python Client for GemFire</h1>
 
 <p>For a quick getting started guide please see README for the project at <a href="https://github.com/gemfire/py-gemfire-rest">https://github.com/gemfire/py-gemfire-rest</a></p>
 
@@ -46,46 +44,46 @@ With this package:</p>
 <li>Use Spring’s CrudRepository like interface to store/access your data.</li>
 </ul><p>Say, you want to create a simple social networking application in which you store user profiles and the posts they make. This means your two classes could be defined as:</p>
 
-<pre><code>class Profile:
-    def __init__(self, id, name, friends=None):
-        self.id = id
-        self.name = name
-        self.friends = friends
+<div class="highlight highlight-python"><pre><span class="k">class</span> <span class="nc">Profile</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">friends</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="nb">id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">friends</span> <span class="o">=</span> <span class="n">friends</span>
 
-class Posts:
-    def __init__(self, id, author, status, timestamp=time.clock()):
-        self.id = id
-        self.author = author
-        self.status = status
-        self.timestamp = timestamp
-</code></pre>
+<span class="k">class</span> <span class="nc">Posts</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">author</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">clock</span><span class="p">()):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="nb">id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">author</span> <span class="o">=</span> <span class="n">author</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">status</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="n">timestamp</span>
+</pre></div>
 
 <h1>
 <a name="starting-the-gemfire-data-grid" class="anchor" href="#starting-the-gemfire-data-grid"><span class="octicon octicon-link"></span></a>Starting the GemFire data grid</h1>
 
-<p>Please <a href="http://gemfire.docs.pivotal.io/latest/userguide/index.html#getting_started/install_intro.html">install GemFire for your operating system</a>. Now, let us start a GemFire cluster to store your data; GemFire cluster is made up of two types of members, “locators” and “servers”. A locator is a service that enables GemFire servers to discover each other, facilitates load balancing etc. From GemFireSHell (gfsh) start a locator as follows: (For high availability, you should start more than one locator per cluster)</p>
+<hr><p>Please <a href="http://gemfire.docs.pivotal.io/latest/userguide/index.html#getting_started/install_intro.html">install GemFire for your operating system</a>. Now, let us start a GemFire cluster to store your data; GemFire cluster is made up of two types of members, “locators” and “servers”. A locator is a service that enables GemFire servers to discover each other, facilitates load balancing etc. From GemFireSHell (gfsh) start a locator as follows: (For high availability, you should start more than one locator per cluster)</p>
 
-<pre><code>gfsh&gt;start locator --name=locator1
+<pre lang="shell"><code>gfsh&gt;start locator --name=locator1
 </code></pre>
 
 <p>A GemFire “server” is a process which manages your data. All nodes talk to one another. A server can be stated as follows</p>
 
-<pre><code>gfsh&gt;start server --name=server1
+<pre lang="shell"><code>gfsh&gt;start server --name=server1
 </code></pre>
 
 <p>A server with a REST endpoint can be stated as follows</p>
 
-<pre><code>gfsh&gt;start server --name=server2 --J=-Dgemfire.start-dev-rest-api=true --J=-Dgemfire.http-service-port=8080
+<pre lang="shell"><code>gfsh&gt;start server --name=server2 --J=-Dgemfire.start-dev-rest-api=true --J=-Dgemfire.http-service-port=8080
 </code></pre>
 
 <p>Let us create Regions (RDBMS equivalent of Tables) to stores this data</p>
 
-<pre><code>gfsh&gt;create region --name=profiles --type=REPLICATE
+<pre lang="shell"><code>gfsh&gt;create region --name=profiles --type=REPLICATE
 </code></pre>
 
 <p>A replicate region maintains a copy of the entire data on each server</p>
 
-<pre><code>gfsh&gt;create region --name=posts --type=PARTITION
+<pre lang="shell"><code>gfsh&gt;create region --name=posts --type=PARTITION
 </code></pre>
 
 <p>A partitioned region splits its contents among all servers</p>
@@ -93,68 +91,199 @@ class Posts:
 <h1>
 <a name="writing-python-application" class="anchor" href="#writing-python-application"><span class="octicon octicon-link"></span></a>Writing Python Application</h1>
 
-<p>Now that we have the GemFire RESTful service started, we can create our client instance and store data:</p>
+<hr><p>Now that we have the GemFire RESTful service started, we can create our client instance and store data:</p>
 
-<pre><code>#create client using hostname and port of GemFire’s REST service endpoint
-client = GemfireClient(hostname="localhost", port=8080)
+<div class="highlight highlight-python"><pre><span class="c">#create client using hostname and port of GemFire’s REST service endpoint</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">GemfireClient</span><span class="p">(</span><span class="n">hostname</span><span class="o">=</span><span class="s">"localhost"</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">8080</span><span class="p">)</span>
+</pre></div>
 
-#create a repository for storing profiles
-profiles = client.create_repository(“profiles”)
+<p><a href="#gemfireclient-api">All methods on GemfireClient</a>. From this client we can create repositories for storing our entities</p>
 
-#save profiles in GemFire
-user1 = Profile(1, “Ethan”)
-profiles.save(user1)
+<div class="highlight highlight-python"><pre><span class="c">#create a repository for storing profiles</span>
+<span class="n">profiles</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">create_repository</span><span class="p">(</span><span class="err">“</span><span class="n">profiles</span><span class="err">”</span><span class="p">)</span>
 
-#you can also pass a list of entities, efficient for bulk loading
-post1 = Post(1, "Ethan", "Eating Toast!")
-post2 = Post(2, "Isabella", "Drinking Coffee")
-posts = client.create_repository("posts")
-posts.save([post1, post2])
+<span class="c">#save profiles in GemFire</span>
+<span class="n">user1</span> <span class="o">=</span> <span class="n">Profile</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="err">“</span><span class="n">Ethan</span><span class="err">”</span><span class="p">)</span>
+<span class="n">profiles</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">user1</span><span class="p">)</span>
 
-# find an existing profile
-user2 = profiles.find(1)
-</code></pre>
+<span class="c">#you can also pass a list of entities, efficient for bulk loading</span>
+<span class="n">post1</span> <span class="o">=</span> <span class="n">Post</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">"Ethan"</span><span class="p">,</span> <span class="s">"Eating Toast!"</span><span class="p">)</span>
+<span class="n">post2</span> <span class="o">=</span> <span class="n">Post</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">"Isabella"</span><span class="p">,</span> <span class="s">"Drinking Coffee"</span><span class="p">)</span>
+<span class="n">posts</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">create_repository</span><span class="p">(</span><span class="s">"posts"</span><span class="p">)</span>
+<span class="n">posts</span><span class="o">.</span><span class="n">save</span><span class="p">([</span><span class="n">post1</span><span class="p">,</span> <span class="n">post2</span><span class="p">])</span>
 
-<p>A complete list of methods for GemfireClient and the Repository modules:</p>
+<span class="c"># find an existing profile</span>
+<span class="n">user</span> <span class="o">=</span> <span class="n">profiles</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
 
-<p>For specialized operations on the Region like compare and set, putIfAbsent etc. you can obtain the Region directly from the repository:
-profile_region = profiles.get_region()
-A complete list of Region methods is:</p>
+<p><a href="#repository-api">All methods on Repository</a></p>
+
+<p>For specialized operations like compare_and_set, putIfAbsent etc. you can obtain the Region directly from the repository:</p>
+
+<div class="highlight highlight-python"><pre><span class="n">profile_region</span> <span class="o">=</span> <span class="n">profiles</span><span class="o">.</span><span class="n">get_region</span><span class="p">()</span>
+</pre></div>
+
+<p><a href="#region-api">All methods on Region</a></p>
 
 <h1>
 <a name="query" class="anchor" href="#query"><span class="octicon octicon-link"></span></a>Query</h1>
 
-<p>GemFire supports OQL queries. For an example, let us say we want to get all posts by Ethan. We can write an ad-hoc query as follows:</p>
+<hr><p>GemFire supports OQL queries. For an example, let us say we want to get all posts by Ethan. We can write an ad-hoc query as follows:</p>
 
-<pre><code>result = client.adhoc_query("select * from /posts where author='Ethan' ")
-    for p in result:
-        print p.status
-</code></pre>
+<div class="highlight highlight-python"><pre><span class="n">result</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">adhoc_query</span><span class="p">(</span><span class="s">"select * from /posts where author='Ethan' "</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">p</span><span class="o">.</span><span class="n">status</span>
+</pre></div>
 
-<p>When we want to use the above query for a different author, we can create a prepared query by passing an identifier for the prepared query along with the actual query string. We can use the identifier to run a prepared query at a later point. In the below example, we create a prepared query identified by “all_posts” and later use that identifier to run the query by passing in the parameters.</p>
+<h2>
+<a name="prepared-query" class="anchor" href="#prepared-query"><span class="octicon octicon-link"></span></a>Prepared Query</h2>
 
-<pre><code>    client.new_query("all_posts", "select * from /posts where author=$1")
-    result = client.run_query("all_posts", "Ethan")
-    for p in result:
-        print p.status
-</code></pre>
+<hr><p>When we want to use the above query for a different author, we can create a prepared query by passing an identifier for the prepared query along with the actual query string. We can use the identifier to run a prepared query at a later point. In the below example, we create a prepared query identified by “all_posts” and later use that identifier to run the query by passing in the parameters.</p>
+
+<div class="highlight highlight-python"><pre>    <span class="n">client</span><span class="o">.</span><span class="n">new_query</span><span class="p">(</span><span class="s">"all_posts"</span><span class="p">,</span> <span class="s">"select * from /posts where author=$1"</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">run_query</span><span class="p">(</span><span class="s">"all_posts"</span><span class="p">,</span> <span class="s">"Ethan"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">p</span><span class="o">.</span><span class="n">status</span>
+</pre></div>
 
 <h1>
 <a name="accessing-data-from-other-languages" class="anchor" href="#accessing-data-from-other-languages"><span class="octicon octicon-link"></span></a>Accessing data from Other Languages</h1>
 
-<p>GemFire internally saves this data in its Portable Data eXchange format (PDX), so it is possible to access and modify the data inserted from python in other languages. The following code snippet demonstrates how this can be done from GemFire’s Java client:</p>
+<hr><p>GemFire internally saves this data in its Portable Data eXchange format (PDX), so it is possible to access and modify the data inserted from python in other languages. The following code snippet demonstrates how this can be done from GemFire’s Java client:</p>
 
-<pre><code>ClientCacheFactory cf = new ClientCacheFactory();
-        cf.addPoolLocator(“localhost”, 10334);
-        ClientCache cache = cf.create();
-        ClientRegionFactory&lt;Integer, Profile&gt; rf = cache.createClientRegionFactory(ClientRegionShortcut.PROXY);
-        Region profiles = rf.create("profiles");
-        PdxInstance user1 = (PdxInstance) profiles.get("1");
-        System.out.println("get returned:"+user1.getField("name")); //prints Ethan
-        WritablePdxInstance userModified = user1.createWriter();
-        userModified.setField("name", "Ethan Jr");
-        profiles.put("1", userModified);
-</code></pre>
+<div class="highlight highlight-java"><pre><span class="c1">//create a client-cache to access server data</span>
+<span class="n">ClientCacheFactory</span> <span class="n">cf</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">ClientCacheFactory</span><span class="o">();</span>
+<span class="n">cf</span><span class="o">.</span><span class="na">addPoolLocator</span><span class="o">(</span><span class="err">“</span><span class="n">localhost</span><span class="err">”</span><span class="o">,</span> <span class="mi">10334</span><span class="o">);</span>
+<span class="n">ClientCache</span> <span class="n">cache</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="na">create</span><span class="o">();</span>
+
+<span class="c1">//create a reference to the region on the client</span>
+<span class="n">ClientRegionFactory</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">Profile</span><span class="o">&gt;</span> <span class="n">rf</span> <span class="o">=</span> <span class="n">cache</span><span class="o">.</span><span class="na">createClientRegionFactory</span><span class="o">(</span><span class="n">ClientRegionShortcut</span><span class="o">.</span><span class="na">PROXY</span><span class="o">);</span>
+<span class="n">Region</span> <span class="n">profiles</span> <span class="o">=</span> <span class="n">rf</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="s">"profiles"</span><span class="o">);</span>
+
+<span class="c1">//get the profile for user id 1</span>
+<span class="n">PdxInstance</span> <span class="n">user1</span> <span class="o">=</span> <span class="o">(</span><span class="n">PdxInstance</span><span class="o">)</span> <span class="n">profiles</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"1"</span><span class="o">);</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"get returned:"</span><span class="o">+</span><span class="n">user1</span><span class="o">.</span><span class="na">getField</span><span class="o">(</span><span class="s">"name"</span><span class="o">));</span> <span class="c1">//prints Ethan</span>
+
+<span class="c1">// modify the profile</span>
+<span class="n">WritablePdxInstance</span> <span class="n">userModified</span> <span class="o">=</span> <span class="n">user1</span><span class="o">.</span><span class="na">createWriter</span><span class="o">();</span>
+<span class="n">userModified</span><span class="o">.</span><span class="na">setField</span><span class="o">(</span><span class="s">"name"</span><span class="o">,</span> <span class="s">"Ethan Jr"</span><span class="o">);</span>
+<span class="n">profiles</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"1"</span><span class="o">,</span> <span class="n">userModified</span><span class="o">);</span>
+</pre></div>
+
+<h1>
+<a name="api" class="anchor" href="#api"><span class="octicon octicon-link"></span></a>API</h1>
+
+<hr><p>A complete list of methods for GemfireClient, Repository and Region modules:</p>
+
+<h2>
+<a name="gemfireclient-" class="anchor" href="#gemfireclient-"><span class="octicon octicon-link"></span></a>GemfireClient </h2>
+
+<hr><div class="highlight highlight-python"><pre><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hostname</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">debug_mode</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+      <span class="n">Initializes</span> <span class="n">the</span> <span class="n">Client</span> <span class="k">with</span> <span class="n">the</span> <span class="n">given</span> <span class="n">hostname</span> <span class="ow">and</span> <span class="n">port</span>
+
+<span class="n">adhoc_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_string</span><span class="p">)</span>
+      <span class="n">Runs</span> <span class="n">an</span> <span class="n">adhoc</span> <span class="n">Query</span>
+
+<span class="n">connection</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+      <span class="n">Checks</span> <span class="n">connection</span> <span class="n">to</span> <span class="n">the</span> <span class="n">server</span>
+
+<span class="n">create_repository</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+      <span class="n">Initializes</span> <span class="ow">and</span> <span class="n">returns</span> <span class="n">a</span> <span class="n">Repository</span> <span class="n">Object</span>
+
+<span class="n">error_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+      <span class="n">Processes</span> <span class="n">HTTP</span> <span class="n">error</span> <span class="n">responses</span>
+
+<span class="n">execute_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region_name</span><span class="p">,</span> <span class="n">func_id</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+      <span class="n">Run</span> <span class="n">function</span>
+
+<span class="n">list_all_functions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+      <span class="n">List</span> <span class="nb">all</span> <span class="n">stored</span> <span class="n">function</span> <span class="n">ID</span><span class="s">'s stored on server</span>
+
+<span class="n">list_all_queries</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+      <span class="n">Lists</span> <span class="nb">all</span> <span class="n">stored</span> <span class="n">Queries</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">server</span>
+
+<span class="n">list_all_regions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+      <span class="n">Lists</span> <span class="nb">all</span> <span class="n">names</span> <span class="n">of</span> <span class="n">Regions</span> <span class="n">present</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">server</span>
+
+<span class="n">new_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_id</span><span class="p">,</span> <span class="n">query_string</span><span class="p">)</span>
+      <span class="n">Creates</span> <span class="n">a</span> <span class="n">new</span> <span class="n">Query</span> <span class="ow">and</span> <span class="n">adds</span> <span class="n">it</span> <span class="n">to</span> <span class="n">the</span> <span class="n">server</span>
+
+<span class="n">run_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_id</span><span class="p">,</span> <span class="n">query_args</span><span class="p">)</span>
+      <span class="n">Runs</span> <span class="n">the</span> <span class="n">Query</span> <span class="k">with</span> <span class="n">specified</span> <span class="n">parameters</span>
+</pre></div>
+
+<h2>
+<a name="repository-" class="anchor" href="#repository-"><span class="octicon octicon-link"></span></a>Repository </h2>
+
+<hr><div class="highlight highlight-python"><pre><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">base_url</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span>
+      <span class="n">Initializes</span> <span class="n">a</span> <span class="n">Repository</span>
+
+<span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entities</span><span class="p">)</span>
+      <span class="n">Deletes</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">Object</span> <span class="kn">from</span> <span class="nn">the</span> <span class="nn">region</span>
+
+<span class="n">delete_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+      <span class="n">Deletes</span> <span class="nb">all</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">region</span>
+
+<span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+      <span class="n">Checks</span> <span class="n">whether</span> <span class="n">an</span> <span class="n">Object</span> <span class="k">with</span> <span class="n">the</span> <span class="n">given</span> <span class="nb">id</span> <span class="n">exists</span>
+
+<span class="n">find</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">)</span>
+      <span class="n">Retrieves</span> <span class="n">Object</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="n">by</span> <span class="n">the</span> <span class="n">given</span> <span class="n">ID</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">the</span> <span class="nn">region</span>
+
+<span class="n">find_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+      <span class="n">Returns</span> <span class="nb">all</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">region</span>
+
+<span class="n">get_region</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+      <span class="n">Instantiates</span> <span class="ow">and</span> <span class="n">returns</span> <span class="n">a</span> <span class="n">Region</span> <span class="nb">object</span>
+
+<span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entities</span><span class="p">)</span>
+      <span class="n">Saves</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="nb">all</span> <span class="n">given</span> <span class="n">Objects</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">region</span>
+
+</pre></div>
+
+<h2>
+<a name="region-" class="anchor" href="#region-"><span class="octicon octicon-link"></span></a>Region </h2>
+
+<div class="highlight highlight-python"><pre><span class="n">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+      <span class="n">Method</span> <span class="n">to</span> <span class="n">support</span> <span class="n">region</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="n">notion</span>
+
+<span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">base_url</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span>
+      <span class="n">Initializes</span> <span class="n">a</span> <span class="n">Region</span>
+
+<span class="n">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+      <span class="n">Deletes</span> <span class="nb">all</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">Region</span>
+
+<span class="n">compare_and_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">oldvalue</span><span class="p">,</span> <span class="n">newvalue</span><span class="p">)</span>
+      <span class="n">Compares</span> <span class="n">old</span> <span class="n">values</span> <span class="ow">and</span> <span class="k">if</span> <span class="n">identical</span> <span class="n">replaces</span> <span class="k">with</span> <span class="n">a</span> <span class="n">new</span> <span class="n">value</span>
+
+<span class="n">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+      <span class="n">Creates</span> <span class="n">a</span> <span class="n">new</span> <span class="n">data</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">Region</span> <span class="k">if</span> <span class="n">the</span> <span class="n">key</span> <span class="ow">is</span> <span class="n">absent</span>
+
+<span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+      <span class="n">Deletes</span> <span class="n">the</span> <span class="n">corresponding</span> <span class="n">data</span> <span class="n">value</span> <span class="k">for</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">key</span>
+
+<span class="n">error_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+      <span class="n">Processes</span> <span class="n">HTTP</span> <span class="n">error</span> <span class="n">responses</span>
+
+<span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+      <span class="n">Returns</span> <span class="n">the</span> <span class="n">data</span> <span class="n">value</span> <span class="k">for</span> <span class="n">a</span> <span class="n">specified</span> <span class="n">key</span>
+
+<span class="n">get_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+      <span class="n">Returns</span> <span class="nb">all</span> <span class="n">the</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">a</span> <span class="n">Region</span>
+
+<span class="n">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+      <span class="n">Returns</span> <span class="nb">all</span> <span class="n">keys</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">Region</span>
+
+<span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+      <span class="n">Updates</span> <span class="ow">or</span> <span class="n">inserts</span> <span class="n">data</span> <span class="k">for</span> <span class="n">a</span> <span class="n">specified</span> <span class="n">key</span>
+
+<span class="n">put_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+      <span class="n">Insert</span> <span class="ow">or</span> <span class="n">updates</span> <span class="n">data</span> <span class="k">for</span> <span class="n">multiple</span> <span class="n">keys</span> <span class="n">specified</span> <span class="n">by</span> <span class="n">a</span> <span class="n">hashtable</span>
+
+<span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+      <span class="n">Updates</span> <span class="n">the</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">a</span> <span class="n">region</span> <span class="n">only</span> <span class="k">if</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">key</span> <span class="ow">is</span> <span class="n">present</span>
+
+</pre></div>
       </section>
     </div>
 
