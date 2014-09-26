@@ -31,7 +31,8 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <p>Python Client for GemFire</p>
+        <h1>
+<a name="python-client-for-gemfire" class="anchor" href="#python-client-for-gemfire"><span class="octicon octicon-link"></span></a>Python Client for GemFire</h1>
 
 <hr><p>For a quick getting started guide please see README for the project at <a href="https://github.com/gemfire/py-gemfire-rest">https://github.com/gemfire/py-gemfire-rest</a></p>
 
@@ -57,8 +58,8 @@ With this package:</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="n">timestamp</span>
 </pre></div>
 
-<h1>
-<a name="starting-the-gemfire-data-grid" class="anchor" href="#starting-the-gemfire-data-grid"><span class="octicon octicon-link"></span></a>Starting the GemFire data grid</h1>
+<h3>
+<a name="starting-the-gemfire-data-grid" class="anchor" href="#starting-the-gemfire-data-grid"><span class="octicon octicon-link"></span></a>Starting the GemFire data grid</h3>
 
 <hr><p>Please <a href="http://gemfire.docs.pivotal.io/latest/userguide/index.html#getting_started/install_intro.html">install GemFire for your operating system</a>. Now, let us start a GemFire cluster to store your data; GemFire cluster is made up of two types of members, “locators” and “servers”. A locator is a service that enables GemFire servers to discover each other, facilitates load balancing etc. From GemFireSHell (gfsh) start a locator as follows: (For high availability, you should start more than one locator per cluster)</p>
 
@@ -87,8 +88,8 @@ With this package:</p>
 
 <p>A partitioned region splits its contents among all servers</p>
 
-<h1>
-<a name="writing-python-application" class="anchor" href="#writing-python-application"><span class="octicon octicon-link"></span></a>Writing Python Application</h1>
+<h3>
+<a name="writing-python-application" class="anchor" href="#writing-python-application"><span class="octicon octicon-link"></span></a>Writing Python Application</h3>
 
 <hr><p>Now that we have the GemFire RESTful service started, we can create our client instance and store data:</p>
 
@@ -124,8 +125,8 @@ With this package:</p>
 
 <p><a href="#region-api">All methods on Region</a></p>
 
-<h1>
-<a name="query" class="anchor" href="#query"><span class="octicon octicon-link"></span></a>Query</h1>
+<h3>
+<a name="query" class="anchor" href="#query"><span class="octicon octicon-link"></span></a>Query</h3>
 
 <hr><p>GemFire supports OQL queries. For an example, let us say we want to get all posts by Ethan. We can write an ad-hoc query as follows:</p>
 
@@ -134,8 +135,8 @@ With this package:</p>
         <span class="k">print</span> <span class="n">p</span><span class="o">.</span><span class="n">status</span>
 </pre></div>
 
-<h3>
-<a name="prepared-query" class="anchor" href="#prepared-query"><span class="octicon octicon-link"></span></a>Prepared Query</h3>
+<h5>
+<a name="prepared-query" class="anchor" href="#prepared-query"><span class="octicon octicon-link"></span></a>Prepared Query</h5>
 
 <hr><p>When we want to use the above query for a different author, we can create a prepared query by passing an identifier for the prepared query along with the actual query string. We can use the identifier to run a prepared query at a later point. In the below example, we create a prepared query identified by “all_posts” and later use that identifier to run the query by passing in the parameters.</p>
 
@@ -145,8 +146,8 @@ With this package:</p>
         <span class="k">print</span> <span class="n">p</span><span class="o">.</span><span class="n">status</span>
 </pre></div>
 
-<h1>
-<a name="accessing-data-from-other-languages" class="anchor" href="#accessing-data-from-other-languages"><span class="octicon octicon-link"></span></a>Accessing data from Other Languages</h1>
+<h3>
+<a name="accessing-data-from-other-languages" class="anchor" href="#accessing-data-from-other-languages"><span class="octicon octicon-link"></span></a>Accessing data from Other Languages</h3>
 
 <hr><p>GemFire internally saves this data in its Portable Data eXchange format (PDX), so it is possible to access and modify the data inserted from python in other languages. The following code snippet demonstrates how this can be done from GemFire’s Java client:</p>
 
@@ -169,15 +170,15 @@ With this package:</p>
 <span class="n">profiles</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"1"</span><span class="o">,</span> <span class="n">userModified</span><span class="o">);</span>
 </pre></div>
 
-<h1>
-<a name="api" class="anchor" href="#api"><span class="octicon octicon-link"></span></a>API</h1>
+<h3>
+<a name="api" class="anchor" href="#api"><span class="octicon octicon-link"></span></a>API</h3>
 
 <hr><p>A complete list of methods for GemfireClient, Repository and Region modules:</p>
 
 <p><a name="gemfireclient-api"></a></p>
 
-<h3>
-<a name="gemfireclient" class="anchor" href="#gemfireclient"><span class="octicon octicon-link"></span></a>GemfireClient</h3>
+<h5>
+<a name="gemfireclient" class="anchor" href="#gemfireclient"><span class="octicon octicon-link"></span></a>GemfireClient</h5>
 
 <div class="highlight highlight-python"><pre><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hostname</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">debug_mode</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
       <span class="c">#Initializes the Client with the given hostname and port</span>
@@ -215,8 +216,8 @@ With this package:</p>
 
 <p><a name="repository-api"></a></p>
 
-<h3>
-<a name="repository" class="anchor" href="#repository"><span class="octicon octicon-link"></span></a>Repository</h3>
+<h5>
+<a name="repository" class="anchor" href="#repository"><span class="octicon octicon-link"></span></a>Repository</h5>
 
 <div class="highlight highlight-python"><pre><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">base_url</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span>
       <span class="c">#Initializes a Repository</span>
@@ -246,8 +247,8 @@ With this package:</p>
 
 <p><a name="region-api"></a></p>
 
-<h3>
-<a name="region" class="anchor" href="#region"><span class="octicon octicon-link"></span></a>Region</h3>
+<h5>
+<a name="region" class="anchor" href="#region"><span class="octicon octicon-link"></span></a>Region</h5>
 
 <div class="highlight highlight-python"><pre><span class="n">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
       <span class="c">#Method to support region[key] notion</span>
