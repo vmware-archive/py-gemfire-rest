@@ -30,11 +30,12 @@ class GemfireClient:
                                 format=(
                                     '%(filename)s: ''%(levelname)s: ''%(funcName)s(): ''%(lineno)d:\t''%(message)s'))
             logging.info('Started Client')
+        self.session = requests.Session()
         self.connection()
 
     def connection(self):
         ''' Checks connection to the server '''
-        data = requests.get(self.base_url)
+        data = self.session.get(self.base_url)
         if data.status_code == 200:
             logging.info("Client successfully connected to server at " + self.hostname)
             return True
@@ -43,7 +44,7 @@ class GemfireClient:
 
     def list_all_regions(self):
         ''' Lists all names of Regions present in the server '''
-        data = requests.get(self.base_url)
+        data = self.session.get(self.base_url)
         logging.debug("Sending request to " + self.base_url)
         fdata = jsonpickle.decode(data.text)
         rnames = fdata['regions']
@@ -56,7 +57,7 @@ class GemfireClient:
 
     def create_repository(self, name):
         ''' Initializes and returns a Repository Object '''
-        data = requests.get(self.base_url).json()
+        data = self.session.get(self.base_url).json()
         logging.debug("Sending request to " + self.base_url)
         rnames = data['regions']
         names = [region['name'] for region in rnames]
@@ -72,7 +73,7 @@ class GemfireClient:
 
     def list_all_queries(self):
         ''' Lists all stored Queries in the server '''
-        data = requests.get(self.base_url + "/queries")
+        data = self.session.get(self.base_url + "/queries")
         logging.debug("Sending request to " + self.base_url + "/queries")
         fdata = jsonpickle.decode(data.text)
         if data.status_code == 200:
@@ -87,7 +88,7 @@ class GemfireClient:
         url = self.base_url + "queries/" + query_id
         headers = {'content-type': 'application/json'}
         jvalue = jsonpickle.encode(args)
-        data = requests.post(url, data=jvalue, headers=headers)
+        data = self.session.post(url, data=jvalue, headers=headers)
         logging.debug("Sending request to " + url)
         if data.status_code == 200:
             logging.debug("Response from server: " + " ,".join(data))
@@ -100,7 +101,7 @@ class GemfireClient:
         url = self.base_url + "/queries?id=" + str(query_id) + "&q=" + str(query_string)
         headers = {'content-type': 'application/json'}
         jvalue = jsonpickle.encode(query_string)
-        data = requests.post(url, data=jvalue, headers=headers)
+        data = self.session.post(url, data=jvalue, headers=headers)
         logging.debug("Sending request to " + url)
         if data.status_code == 201:
             logging.debug("Query " + query_id + " was successfully added to the server")
@@ -111,7 +112,7 @@ class GemfireClient:
     def adhoc_query(self, query_string):
         ''' Runs an adhoc Query '''
         url = self.base_url + "queries/adhoc?q=" + str(query_string)
-        data = requests.get(url)
+        data = self.session.get(url)
         logging.debug("Sending request to " + url)
         if data.status_code == 200:
             logging.debug("Response from server: " + " ,".join(data))
@@ -122,7 +123,7 @@ class GemfireClient:
     def list_all_functions(self):
         ''' List all stored function ID's stored on server '''
         url = self.base_url + "functions"
-        data = requests.get(url)
+        data = self.session.get(url)
         logging.debug("Sending request to " + url)
         if data.status_code == 200:
             logging.debug("Response from server: " + " ,".join(data))
@@ -135,7 +136,7 @@ class GemfireClient:
         url = self.base_url + "functions/" + str(func_id) + "?onRegion=" + str(region_name)
         headers = {'content-type': 'application/json'}
         jvalue = jsonpickle.encode(value)
-        data = requests.post(url, data=jvalue, headers=headers)
+        data = self.session.post(url, data=jvalue, headers=headers)
         logging.debug("Sending request to " + url)
         if data.status_code == 200:
             logging.debug("Response from server: " + " ,".join(data))
