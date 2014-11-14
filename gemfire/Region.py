@@ -21,6 +21,7 @@ class Region:
         self.name = name
         self.base_url = base_url
         self.type = type
+        self.session = requests.Session()
 
     def get_all(self):
         ''' Returns all the data in a Region '''
@@ -39,7 +40,7 @@ class Region:
         url = self.base_url + "?key=" + str(key)
         headers = {'content-type': 'application/json'}
         jvalue = jsonpickle.encode(value)
-        data = requests.post(url, data=jvalue, headers=headers)
+        data = self.session.post(url, data=jvalue, headers=headers)
         logging.debug("Sending request to " + url)
         if data.status_code == 201:
             logging.debug("The value " + str(value) + " was created in the region for the key " + str(key))
@@ -52,7 +53,7 @@ class Region:
         url = self.base_url + "/" + str(key)
         headers = {'content-type': 'application/json'}
         jvalue = jsonpickle.encode(value)
-        data = requests.put(url, data=jvalue, headers=headers)
+        data = self.session.put(url, data=jvalue, headers=headers)
         logging.debug("Sending request to " + url)
         if data.status_code == 200:
             logging.debug("The value " + str(value) + " was put in the region for the key " + str(key))
@@ -63,7 +64,7 @@ class Region:
     def keys(self):
         ''' Returns all keys in the Region '''
         url = self.base_url + "/keys"
-        data = requests.get(url)
+        data = self.session.get(url)
         logging.debug("Sending request to " + url)
         fdata = jsonpickle.decode(data.text)
         if data.status_code == 200:
@@ -76,7 +77,7 @@ class Region:
         ''' Returns the data value for a specified key '''
         sub_url = ','.join(str(key) for key in arg)
         url = self.base_url + "/" + sub_url + "?ignoreMissingKey=true"
-        data = requests.get(url)
+        data = self.session.get(url)
         logging.debug("Sending request to " + url)
         if data.status_code == 200:
             logging.debug("Response from server: " + " ,".join(data))
@@ -87,7 +88,7 @@ class Region:
     def __getitem__(self, key):
         ''' Method to support region[key] notion '''
         url = self.base_url + "/" + str(key) + "?ignoreMissingKey=true"
-        data = requests.get(url)
+        data = self.session.get(url)
         logging.debug("Sending request to " + url)
         if data.status_code == 200:
             logging.debug("Response from server: " + " ,".join(data))
@@ -101,7 +102,7 @@ class Region:
         url = self.base_url + "/" + sub_url
         headers = {'content-type': 'application/json'}
         jvalue = jsonpickle.encode(item.values())
-        data = requests.put(url, data=jvalue, headers=headers)
+        data = self.session.put(url, data=jvalue, headers=headers)
         logging.debug("Sending request to " + url)
         if data.status_code == 200:
             logging.debug(str(item) + " was put into the region")
@@ -114,7 +115,7 @@ class Region:
         url = self.base_url + "/" + str(key) + "?op=REPLACE"
         headers = {'content-type': 'application/json'}
         jvalue = jsonpickle.encode(value)
-        data = requests.put(url, data=jvalue, headers=headers)
+        data = self.session.put(url, data=jvalue, headers=headers)
         logging.debug("Sending request to " + url)
         if data.status_code == 200:
             logging.debug("The value at key: " + str(key) + " was updated to " + str(value))
@@ -128,7 +129,7 @@ class Region:
         headers = {'content-type': 'application/json'}
         value = {"@old": oldvalue, "@new": newvalue}
         jvalue = jsonpickle.encode(value)
-        data = requests.put(url, data=jvalue, headers=headers)
+        data = self.session.put(url, data=jvalue, headers=headers)
         logging.debug("Sending request to " + url)
         if data.status_code == 200:
             logging.debug(str(oldvalue) + " was replaced with " + str(newvalue) + " at the key " + str(key))
@@ -140,7 +141,7 @@ class Region:
         ''' Deletes the corresponding data value for the specified key '''
         sub_url = ','.join(str(key) for key in arg)
         url = self.base_url + "/" + sub_url
-        data = requests.delete(url)
+        data = self.session.delete(url)
         logging.debug("Sending request to " + url)
         if data.status_code == 200:
             logging.debug("The values for the keys: " + str(arg) + " were deleted from the region")
@@ -151,7 +152,7 @@ class Region:
     def clear(self):
         ''' Deletes all data in the Region '''
         if self.type == "REPLICATE":
-            data = requests.delete(self.base_url)
+            data = self.session.delete(self.base_url)
             if data.status_code == 200:
                 logging.debug("All data was cleared from the region")
                 return True

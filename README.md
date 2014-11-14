@@ -24,7 +24,7 @@ or from source:
 ```
 3. 
 ```python
-    >>> from gemfire.GemfireClient import *
+    >>> from gemfire import *
     >>> client = GemfireClient(hostname="localhost", port=8080)
     >>> myRepo = client.create_repository("orders")
     >>> myRepo.save(order)
