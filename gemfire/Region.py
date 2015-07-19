@@ -13,10 +13,9 @@ import logging
 import requests
 import jsonpickle
 
-
 class Region:
 
-    def __init__(self, name, base_url, type):
+    def __init__(self,name,base_url,type):
         ''' Initializes a Region '''
         self.name = name
         self.base_url = base_url
@@ -30,7 +29,7 @@ class Region:
         logging.debug("Sending request to " + url)
         fdata = jsonpickle.decode(data.text)
         if data.status_code == 200:
-            logging.debug("Response from server: " + " ,".join(data))
+            logging.debug("Response from server: " + str(data))
             return fdata[self.name]
         else:
             self.error_response(data)
@@ -68,7 +67,7 @@ class Region:
         logging.debug("Sending request to " + url)
         fdata = jsonpickle.decode(data.text)
         if data.status_code == 200:
-            logging.debug("Response from server: " + " ,".join(data))
+            logging.debug("Response from server: " + str(data))
             return fdata["keys"]
         else:
             self.error_response(data)
@@ -80,7 +79,7 @@ class Region:
         data = self.session.get(url)
         logging.debug("Sending request to " + url)
         if data.status_code == 200:
-            logging.debug("Response from server: " + " ,".join(data))
+            logging.debug("Response from server: " + str(data))
             return jsonpickle.decode(data.text)
         else:
             self.error_response(data)
@@ -91,7 +90,7 @@ class Region:
         data = self.session.get(url)
         logging.debug("Sending request to " + url)
         if data.status_code == 200:
-            logging.debug("Response from server: " + " ,".join(data))
+            logging.debug("Response from server: " + str(data))
             return jsonpickle.decode(data.text)
         else:
             self.error_response(data)
@@ -101,7 +100,7 @@ class Region:
         sub_url = ','.join(str(keys) for keys in item)
         url = self.base_url + "/" + sub_url
         headers = {'content-type': 'application/json'}
-        jvalue = jsonpickle.encode(item.values())
+        jvalue = jsonpickle.encode(list(item.values()))
         data = self.session.put(url, data=jvalue, headers=headers)
         logging.debug("Sending request to " + url)
         if data.status_code == 200:
@@ -166,11 +165,6 @@ class Region:
 
     def error_response(self, data):
         ''' Processes HTTP error responses '''
-        if data != 400 or data != 409 or data != 405:
-            logging.warning("Response from server: " + str(data.status_code) + " " + data.reason + " - " + data.text)
-            print str(data.status_code) + ": " + data.reason
-            return False
-        else:
-            logging.debug("Response from server: " + str(data.status_code) + " " + data.reason + " - " + data.text)
-            return False
 
+        logging.debug("Response from server: " + str(data.status_code) + " " + data.reason + " - " + data.text)
+        return False

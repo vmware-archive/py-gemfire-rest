@@ -10,8 +10,7 @@ See the License for the specific language governing permissions and limitations 
 
 
 from datetime import datetime
-from Repository import *
-
+from gemfire.Repository import *
 
 class GemfireClient:
     '''
@@ -50,7 +49,7 @@ class GemfireClient:
         rnames = fdata['regions']
         names = [region['name'] for region in rnames]
         if data.status_code == 200:
-            logging.debug("Response from server: " + " ,".join(data))
+            logging.debug("Response from server: " + str(data))
             return names
         else:
             self.error_response(data)
@@ -68,7 +67,6 @@ class GemfireClient:
                 return Repository(name, self.base_url, type)
         else:
             logging.debug("Repository " + name + " does not exist in the server")
-            print "Repository " + name + " does not exist in the server"
             return False
 
     def list_all_queries(self):
@@ -77,7 +75,7 @@ class GemfireClient:
         logging.debug("Sending request to " + self.base_url + "/queries")
         fdata = jsonpickle.decode(data.text)
         if data.status_code == 200:
-            logging.debug("Response from server: " + " ,".join(data))
+            logging.debug("Response from server: " + str(data))
             return fdata["queries"]
         else:
             self.error_response(data)
@@ -91,7 +89,7 @@ class GemfireClient:
         data = self.session.post(url, data=jvalue, headers=headers)
         logging.debug("Sending request to " + url)
         if data.status_code == 200:
-            logging.debug("Response from server: " + " ,".join(data))
+            logging.debug("Response from server: " + str(data))
             return jsonpickle.decode(data.text)
         else:
             self.error_response(data)
@@ -115,7 +113,7 @@ class GemfireClient:
         data = self.session.get(url)
         logging.debug("Sending request to " + url)
         if data.status_code == 200:
-            logging.debug("Response from server: " + " ,".join(data))
+            logging.debug("Response from server: " + str(data))
             return jsonpickle.decode(data.text)
         else:
             self.error_response(data)
@@ -126,7 +124,7 @@ class GemfireClient:
         data = self.session.get(url)
         logging.debug("Sending request to " + url)
         if data.status_code == 200:
-            logging.debug("Response from server: " + " ,".join(data))
+            logging.debug("Response from server: " + str(data))
             return jsonpickle.decode(data.text)
         else:
             self.error_response(data)
@@ -139,17 +137,12 @@ class GemfireClient:
         data = self.session.post(url, data=jvalue, headers=headers)
         logging.debug("Sending request to " + url)
         if data.status_code == 200:
-            logging.debug("Response from server: " + " ,".join(data))
+            logging.debug("Response from server: " + str(data))
             return jsonpickle.decode(data.text)
         else:
             self.error_response(data)
 
     def error_response(self, data):
         ''' Processes HTTP error responses '''
-        if data != 400 or data != 409 or data != 405:
-            logging.warning("Response from server: " + str(data.status_code) + " " + data.reason + " - " + data.text)
-            print str(data.status_code) + ": " + data.reason
-            return False
-        else:
-            logging.debug("Response from server: " + str(data.status_code) + " " + data.reason + " - " + data.text)
-            return False
+        logging.debug("Response from server: " + str(data.status_code) + " " + data.reason + " - " + data.text)
+        return False
