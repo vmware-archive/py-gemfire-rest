@@ -9,8 +9,7 @@ See the License for the specific language governing permissions and limitations 
 '''
 
 
-from Region import *
-
+from gemfire.Region import *
 
 class Repository:
 
