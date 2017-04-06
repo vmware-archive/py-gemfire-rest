@@ -17,7 +17,7 @@ or from source:
 ## Quick Start
 --------------
 
-1. Start the GemFire REST service by [following the instructions](http://gemfire.docs.pivotal.io/latest/userguide/index.html#gemfire_rest/setup_config.html)
+1. Start the GemFire REST service by [following the instructions](http://gemfire.docs.pivotal.io/docs-gemfire/latest/rest_apps/setup_config.html)
 2. Create a Region on the server (Region is a distributed ConcurrentMap in which GemFire stores the data). 
 ```
     gfsh>create region --name=orders --type=PARTITION
@@ -35,7 +35,7 @@ where the order object has an "id" instance variable. The library handles conver
 ## API Reference
 ----------------
 
-This library exercises [GemFire's REST APIs](http://gemfire.docs.pivotal.io/latest/userguide/index.html#gemfire_rest/book_intro.html) for enabling your python application to use GemFire as its datastore. To get started, we create a client by providing a hostname and port for an already running endpoint. 
+This library exercises [GemFire's REST APIs](http://gemfire.docs.pivotal.io/docs-gemfire/latest/rest_apps/book_intro.html) for enabling your python application to use GemFire as its datastore. To get started, we create a client by providing a hostname and port for an already running endpoint. 
 ```python
     client = GemfireClient(hostname="localhost", port=8080)
 ```
@@ -79,7 +79,7 @@ For advanced operations, we also provide access to Region, which defines the fol
 
 ### Querying
 ------------
-GemfireClient provides API for running ad-hoc [OQL queries](http://gemfire.docs.pivotal.io/latest/userguide/index.html#developing/querying_basics/chapter_overview.html) on the server.
+GemfireClient provides API for running ad-hoc [OQL queries](http://gemfire.docs.pivotal.io/docs-gemfire/latest/developing/querying_basics/chapter_overview.html) on the server.
 ```python
     adhoc_query(query_string)  #OQL query string
 ```
