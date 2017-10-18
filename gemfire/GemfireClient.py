@@ -10,7 +10,8 @@ See the License for the specific language governing permissions and limitations 
 
 
 from datetime import datetime
-from gemfire.Repository import *
+from Repository import *
+
 
 class GemfireClient:
     '''
@@ -19,22 +20,23 @@ class GemfireClient:
     for instructions on setting up GemFire's REST service.
     '''
 
-    def __init__(self, hostname, port, debug_mode=False):
+    def __init__(self, hostname, port, user, password, debug_mode=False):
         '''Initializes the Client with the given hostname and port'''
         self.hostname = hostname
         self.port = port
+        self.user = user
+        self.password = password
         self.base_url = "http://" + hostname + ":" + str(port) + "/gemfire-api/v1/"
         if debug_mode:
             logging.basicConfig(filename=(datetime.now().strftime('pyrest_%H_%M_%d_%m_%Y.log')), level=logging.DEBUG,
                                 format=(
                                     '%(filename)s: ''%(levelname)s: ''%(funcName)s(): ''%(lineno)d:\t''%(message)s'))
             logging.info('Started Client')
-        self.session = requests.Session()
         self.connection()
 
     def connection(self):
         ''' Checks connection to the server '''
-        data = self.session.get(self.base_url)
+        data = requests.get(self.base_url, auth=(self.user, self.password))
         if data.status_code == 200:
             logging.info("Client successfully connected to server at " + self.hostname)
             return True
@@ -43,20 +45,20 @@ class GemfireClient:
 
     def list_all_regions(self):
         ''' Lists all names of Regions present in the server '''
-        data = self.session.get(self.base_url)
+        data = requests.get(self.base_url, auth=(self.user, self.password))
         logging.debug("Sending request to " + self.base_url)
         fdata = jsonpickle.decode(data.text)
         rnames = fdata['regions']
         names = [region['name'] for region in rnames]
         if data.status_code == 200:
-            logging.debug("Response from server: " + str(data))
+            logging.debug("Response from server: " + " ,".join(data))
             return names
         else:
             self.error_response(data)
 
     def create_repository(self, name):
         ''' Initializes and returns a Repository Object '''
-        data = self.session.get(self.base_url).json()
+        data = requests.get(self.base_url, auth=(self.user, self.password)).json()
         logging.debug("Sending request to " + self.base_url)
         rnames = data['regions']
         names = [region['name'] for region in rnames]
@@ -64,18 +66,19 @@ class GemfireClient:
             if n == name:
                 logging.debug("Returned back Repository object for " + name)
                 type = rnames[names.index(name)]["type"]
-                return Repository(name, self.base_url, type)
+                return Repository(name, self.base_url, self.user, self.password, type)
         else:
             logging.debug("Repository " + name + " does not exist in the server")
+            print "Repository " + name + " does not exist in the server"
             return False
 
     def list_all_queries(self):
         ''' Lists all stored Queries in the server '''
-        data = self.session.get(self.base_url + "/queries")
+        data = requests.get(self.base_url + "/queries", auth=(self.user, self.password))
         logging.debug("Sending request to " + self.base_url + "/queries")
         fdata = jsonpickle.decode(data.text)
         if data.status_code == 200:
-            logging.debug("Response from server: " + str(data))
+            logging.debug("Response from server: " + " ,".join(data))
             return fdata["queries"]
         else:
             self.error_response(data)
@@ -86,10 +89,10 @@ class GemfireClient:
         url = self.base_url + "queries/" + query_id
         headers = {'content-type': 'application/json'}
         jvalue = jsonpickle.encode(args)
-        data = self.session.post(url, data=jvalue, headers=headers)
+        data = requests.post(url, data=jvalue, headers=headers, auth=(self.user, self.password))
         logging.debug("Sending request to " + url)
         if data.status_code == 200:
-            logging.debug("Response from server: " + str(data))
+            logging.debug("Response from server: " + " ,".join(data))
             return jsonpickle.decode(data.text)
         else:
             self.error_response(data)
@@ -99,7 +102,7 @@ class GemfireClient:
         url = self.base_url + "/queries?id=" + str(query_id) + "&q=" + str(query_string)
         headers = {'content-type': 'application/json'}
         jvalue = jsonpickle.encode(query_string)
-        data = self.session.post(url, data=jvalue, headers=headers)
+        data = requests.post(url, data=jvalue, headers=headers, auth=(self.user, self.password))
         logging.debug("Sending request to " + url)
         if data.status_code == 201:
             logging.debug("Query " + query_id + " was successfully added to the server")
@@ -110,10 +113,10 @@ class GemfireClient:
     def adhoc_query(self, query_string):
         ''' Runs an adhoc Query '''
         url = self.base_url + "queries/adhoc?q=" + str(query_string)
-        data = self.session.get(url)
+        data = requests.get(url, auth=(self.user, self.password))
         logging.debug("Sending request to " + url)
         if data.status_code == 200:
-            logging.debug("Response from server: " + str(data))
+            logging.debug("Response from server: " + " ,".join(data))
             return jsonpickle.decode(data.text)
         else:
             self.error_response(data)
@@ -121,10 +124,10 @@ class GemfireClient:
     def list_all_functions(self):
         ''' List all stored function ID's stored on server '''
         url = self.base_url + "functions"
-        data = self.session.get(url)
+        data = requests.get(url, auth=(self.user, self.password))
         logging.debug("Sending request to " + url)
         if data.status_code == 200:
-            logging.debug("Response from server: " + str(data))
+            logging.debug("Response from server: " + " ,".join(data))
             return jsonpickle.decode(data.text)
         else:
             self.error_response(data)
@@ -134,15 +137,20 @@ class GemfireClient:
         url = self.base_url + "functions/" + str(func_id) + "?onRegion=" + str(region_name)
         headers = {'content-type': 'application/json'}
         jvalue = jsonpickle.encode(value)
-        data = self.session.post(url, data=jvalue, headers=headers)
+        data = requests.post(url, data=jvalue, headers=headers, auth=(self.user, self.password))
         logging.debug("Sending request to " + url)
         if data.status_code == 200:
-            logging.debug("Response from server: " + str(data))
+            logging.debug("Response from server: " + " ,".join(data))
             return jsonpickle.decode(data.text)
         else:
             self.error_response(data)
 
     def error_response(self, data):
         ''' Processes HTTP error responses '''
-        logging.debug("Response from server: " + str(data.status_code) + " " + data.reason + " - " + data.text)
-        return False
+        if data != 400 or data != 409 or data != 405:
+            logging.warning("Response from server: " + str(data.status_code) + " " + data.reason + " - " + data.text)
+            print str(data.status_code) + ": " + data.reason
+            return False
+        else:
+            logging.debug("Response from server: " + str(data.status_code) + " " + data.reason + " - " + data.text)
+            return False
