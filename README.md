@@ -25,7 +25,7 @@ or from source:
 3. 
 ```python
     >>> from gemfire import *
-    >>> client = GemfireClient(hostname="localhost", port=8080)
+    >>> client = GemfireClient.GemfireClient(hostname="localhost", port=8080)
     >>> myRepo = client.create_repository("orders")
     >>> myRepo.save(order)
 ```
@@ -37,7 +37,7 @@ where the order object has an "id" instance variable. The library handles conver
 
 This library exercises [GemFire's REST APIs](http://gemfire.docs.pivotal.io/docs-gemfire/latest/rest_apps/book_intro.html) for enabling your python application to use GemFire as its datastore. To get started, we create a client by providing a hostname and port for an already running endpoint. 
 ```python
-    client = GemfireClient(hostname="localhost", port=8080)
+    client = GemfireClient(hostname="localhost", port=8080, user="gfadmin", password="password")
 ```
 
 For each type of Object that we want to store in GemFire, we create a repository (Please not that you will have to create a Region on the server with the same name as the repository).

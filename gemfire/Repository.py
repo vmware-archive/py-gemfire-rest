@@ -9,14 +9,17 @@ See the License for the specific language governing permissions and limitations 
 '''
 
 
-from gemfire.Region import *
+from Region import *
+
 
 class Repository:
 
-    def __init__(self, name, base_url, type):
+    def __init__(self, name, base_url, username, password, type):
         ''' Initializes a Repository '''
         self.name = name
         self.base_url = base_url + name
+        self.user = username
+        self.password = password
         self.type = type
         self.region = self.get_region()
 
@@ -66,4 +69,4 @@ class Repository:
 
     def get_region(self):
         ''' Instantiates and returns a Region object '''
-        return Region(self.name, self.base_url, self.type)
+        return Region(self.name, self.base_url, self.user, self.password, self.type)
